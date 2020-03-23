@@ -41,18 +41,12 @@ from PyQt5.QtGui import (
     QPalette,
     )
 
-from source.methods_json import (
+from lib.wam_core.source.methods_json import (
     load_json,
     save_json,
     )
 
-from source.methods_database import (
-    create_ref_files,
-    add_warbandref,
-    add_characterref,
-    add_itemref,
-    add_abilityref,
-    add_magicref,
+from lib.wam_core.source.methods_database_from import (
     get_warbandref,
     get_characterref,
     get_itemref,
@@ -60,13 +54,22 @@ from source.methods_database import (
     get_magicref,
 )
 
-from source.methods_engine import (
+from lib.wam_core.source.methods_database_to import (
+    create_ref_files,
+    add_warbandref,
+    add_characterref,
+    add_itemref,
+    add_abilityref,
+    add_magicref,
+)
+
+from lib.wam_core.source.methods_engine import (
     save_warband,
     load_warband,
     show_warbands,
     )
 
-from source.class_hierarchy import (
+from lib.wam_core.source.class_hierarchy import (
     Warband,
     Squad,
     Character,
@@ -74,7 +77,7 @@ from source.class_hierarchy import (
     Henchman,
     )
 
-from source.class_components import (
+from lib.wam_core.source.class_components import (
     Rule,
     Treasury,
     Item,

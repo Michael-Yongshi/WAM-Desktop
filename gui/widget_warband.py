@@ -41,7 +41,7 @@ from PyQt5.QtGui import (
     QPalette,
     )
 
-from source.methods_engine import (
+from lib.wam_core.source.methods_engine import (
     save_warband,
     load_warband,
     show_warbands,
@@ -49,7 +49,7 @@ from source.methods_engine import (
     load_reference,
     )
 
-from source.class_hierarchy import (
+from lib.wam_core.source.class_hierarchy import (
     Warband,
     Squad,
     Character,
@@ -57,7 +57,7 @@ from source.class_hierarchy import (
     Henchman,
     )
 
-from source.class_hierarchy import (
+from lib.wam_core.source.class_hierarchy import (
     Rule,
     Treasury,
     Item,

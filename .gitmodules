@@ -1,0 +1,3 @@
+[submodule "lib\\wam_core"]
+	path = lib\\wam_core
+	url = https://github.com/Michael-Yongshi/WAM-Core.git
