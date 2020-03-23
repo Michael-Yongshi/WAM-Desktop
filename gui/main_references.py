@@ -67,6 +67,8 @@ from lib.wam_core.source.methods_engine import (
     save_warband,
     load_warband,
     show_warbands,
+    load_reference,
+    save_reference,
     )
 
 from lib.wam_core.source.class_hierarchy import (
@@ -164,7 +166,7 @@ class TableWarband(QTableWidget):
     def __init__(self):
         super().__init__()
 
-        warbandsdict = load_json("database/references/", "warbands_ref")
+        warbandsdict = load_reference("warbands")
         # charactersdict = load_json("database/references/characters_ref.json")
         # itemsdict = load_json("database/references/items_ref.json")
         # abilitiesdict = load_json("database/references/abilities_ref.json")
