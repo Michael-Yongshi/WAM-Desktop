@@ -103,59 +103,65 @@ class WidgetAbility(QBorderlessFrame):
         """Method for creating a new ability and receiving as attribute the unit it should be added to.
                     """
         def create_ability_for_unit():
-            abilitydict = load_reference("abilities")
-            
-            # get all main categories
-            mains = []
-            for key in abilitydict:
-                mains.append(key)
 
-            main, okPressed = QInputDialog.getItem(self, "Select Main category", "Choose a main category", mains, 0, False)
-            if okPressed and main:
-
-                # get all available categories
-                categories = []
-                for key in abilitydict[main]:
-                    categories.append(key)
-
-                category, okPressed = QInputDialog.getItem(self, "Select category", "Choose a category", categories, 0, False)
-                if okPressed and category:
-
-                    sources = []
-                    for key in abilitydict[main][category]:
-                        sources.append(key)
-
-                    source, okPressed = QInputDialog.getItem(self, "Select source", "Choose a source", sources, 0, False)
-                    if okPressed and source:
-
-                        # get all available abilities
-                        abilities = []
-                        for key in abilitydict[main][category][source]:
-                            abilities.append(key)
-
-                        ability, okPressed = QInputDialog.getItem(self, "Create", "Choose an ability", abilities, 0, False)
-                        if okPressed and ability:
-                            new_ability = Ability.create_ability(
-                                source = source,
-                                main = main,
-                                category = category,
-                                name = ability,
-                            )
-                            
-                            if unit.ishero == True:
-                                for hero in self.mainwindow.wbid.herolist:
-                                    if unit is hero:
-                                        hero.abilitylist.append(new_ability)
-                                        self.mainwindow.initUI()
-                                        
-                            else:
-                                for s in self.mainwindow.wbid.squadlist:
-                                    if unit is s.henchmanlist[0]:
-                                        for henchman in s.henchmanlist:
-                                            henchman.abilitylist.append(new_ability)
-                                        self.mainwindow.initUI()
+            new_ability = WidgetAbility.dialog_new_ability(self.mainwindow)
+         
+            if unit.ishero == True:
+                for hero in self.mainwindow.wbid.herolist:
+                    if unit is hero:
+                        hero.abilitylist.append(new_ability)
+                        self.mainwindow.initUI()
+                        
+            else:
+                for s in self.mainwindow.wbid.squadlist:
+                    if unit is s.henchmanlist[0]:
+                        for henchman in s.henchmanlist:
+                            henchman.abilitylist.append(new_ability)
+                        self.mainwindow.initUI()
 
         return create_ability_for_unit
+
+    @staticmethod
+    def dialog_new_ability(mainwindow):
+        abilitydict = load_reference("abilities")
+        
+        # get all main categories
+        mains = []
+        for key in abilitydict:
+            mains.append(key)
+
+        main, okPressed = QInputDialog.getItem(mainwindow, "Select Main category", "Choose a main category", mains, 0, False)
+        if okPressed and main:
+
+            # get all available categories
+            categories = []
+            for key in abilitydict[main]:
+                categories.append(key)
+
+            category, okPressed = QInputDialog.getItem(mainwindow, "Select category", "Choose a category", categories, 0, False)
+            if okPressed and category:
+
+                sources = []
+                for key in abilitydict[main][category]:
+                    sources.append(key)
+
+                source, okPressed = QInputDialog.getItem(mainwindow, "Select source", "Choose a source", sources, 0, False)
+                if okPressed and source:
+
+                    # get all available abilities
+                    abilities = []
+                    for key in abilitydict[main][category][source]:
+                        abilities.append(key)
+
+                    ability, okPressed = QInputDialog.getItem(mainwindow, "Create", "Choose an ability", abilities, 0, False)
+                    if okPressed and ability:
+                        new_ability = Ability.create_ability(
+                            source = source,
+                            main = main,
+                            category = category,
+                            name = ability,
+                        )
+                        return new_ability
 
     def create_method_remove(self, unit, ability):          
         """ """
@@ -221,49 +227,55 @@ class WidgetMagic(QBorderlessFrame):
         """Method for creating a new magic and receiving as attribute the unit it should be added to.
                     """
         def create_magic_for_unit():
-            magicdict = load_reference("magic")
-            sources = []
-            for key in magicdict:
-                sources.append(key)
-
-            source, okPressed = QInputDialog.getItem(self, "Select source", "Choose a source", sources, 0, False)
-            if okPressed and source:
             
-                # get all available categories
-                categories = []
-                for key in magicdict[source]:
-                    categories.append(key)
+            new_magic = WidgetMagic.dialog_new_magic(self.mainwindow)
 
-                category, okPressed = QInputDialog.getItem(self, "Create", "Choose a category", categories, 0, False)
-                if okPressed and category:
-
-                    # get all available magic
-                    magics = []
-                    for key in magicdict[source][category]:
-                        magics.append(key)
-
-                    magic, okPressed = QInputDialog.getItem(self, "Create", "Choose magic", magics, 0, False)
-                    if okPressed and magic:
-                        new_magic = Magic.create_magic(
-                            name = magic,
-                            category = category,
-                            source = source,
-                        )
+            if unit.ishero == True:
+                for hero in self.mainwindow.wbid.herolist:
+                    if unit is hero:
+                        hero.magiclist.append(new_magic)
+                        self.mainwindow.initUI()
                         
-                        if unit.ishero == True:
-                            for hero in self.mainwindow.wbid.herolist:
-                                if unit is hero:
-                                    hero.magiclist.append(new_magic)
-                                    self.mainwindow.initUI()
-                                    
-                        else:
-                            for s in self.mainwindow.wbid.squadlist:
-                                if unit is s.henchmanlist[0]:
-                                    for henchman in s.henchmanlist:
-                                        henchman.magiclist.append(new_magic)
-                                    self.mainwindow.initUI()
+            else:
+                for s in self.mainwindow.wbid.squadlist:
+                    if unit is s.henchmanlist[0]:
+                        for henchman in s.henchmanlist:
+                            henchman.magiclist.append(new_magic)
+                        self.mainwindow.initUI()
 
         return create_magic_for_unit
+
+    @staticmethod
+    def dialog_new_magic(mainwindow):
+        magicdict = load_reference("magic")
+        sources = []
+        for key in magicdict:
+            sources.append(key)
+
+        source, okPressed = QInputDialog.getItem(mainwindow, "Select source", "Choose a source", sources, 0, False)
+        if okPressed and source:
+        
+            # get all available categories
+            categories = []
+            for key in magicdict[source]:
+                categories.append(key)
+
+            category, okPressed = QInputDialog.getItem(mainwindow, "Create", "Choose a category", categories, 0, False)
+            if okPressed and category:
+
+                # get all available magic
+                magics = []
+                for key in magicdict[source][category]:
+                    magics.append(key)
+
+                magic, okPressed = QInputDialog.getItem(mainwindow, "Create", "Choose magic", magics, 0, False)
+                if okPressed and magic:
+                    new_magic = Magic.create_magic(
+                        name = magic,
+                        category = category,
+                        source = source,
+                    )
+                    return new_magic
 
     def create_method_remove(self, unit, magic):          
         """ """

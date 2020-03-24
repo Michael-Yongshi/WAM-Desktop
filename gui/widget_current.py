@@ -131,23 +131,70 @@ class WidgetCurrent(QRaisedFrame):
 
         def set_new_advance():
 
-            print("setting new advance")
+            # Check if something has to be done at all, can the unit level up
             currentunit = self.mainwindow.currentunit
+            advance_events = currentunit.check_advance_events()
+            print(advance_events)
+
             processes = load_reference("processes")
             advance_process = processes["Core Rules"]["Advancement"]
 
-            if currentunit.ishero == True:
-                roll1, okPressed = QInputDialog.getInt(self, "Roll for advance", advance_process["Heroes"]["description"], 2, 2, 12, 1)
-                if okPressed and roll1:
-                    if roll1 >= 2 and roll1 <= 5:
-                        datadict = load_reference("abilities")
-                        abilities = []
-                        for key in datadict:
-                            abilities.append(key)
+            if len(advance_events) > 0:
+                if currentunit.ishero == True:
+                    event = advance_events[0]
+                    roll1, okPressed = QInputDialog.getInt(self, "Roll for advance", advance_process["Heroes"]["description"], 2, 2, 12, 1)
+                    if okPressed and roll1:
+                        if roll1 <= 5 or roll1 >= 10:
+                            items = ["Ability", "Magic"]
+                            choice, okPressed = QInputDialog.getItem(self, "Choose ability or magic", "Choose if you would prefer to add ability or add magic (magic users only)", items, 0, False)
+                            if okPressed and choice == "Ability":
+                                new_ability = WidgetAbility.dialog_new_ability(self.mainwindow)
+                                currentunit.abilitylist.append(new_ability)
+                                event.description = event.description[:-4] + f"Character gained the ability {new_ability.name}"
 
-                        ability, okPressed = QInputDialog.getItem(self, "Select ability", "Choose an ability", abilities, 0, False)
-                        if okPressed and ability:
-                            pass
+                            if okPressed and choice == "Magic":
+                                new_magic = WidgetMagic.dialog_new_magic(self.mainwindow)
+                                currentunit.magiclist.append(new_magic)
+                                event.description = event.description[:-4] + f"Character gained magic {new_magic.name}"
+                        elif roll1 == 6:
+                            roll2, okPressed = QInputDialog.getInt(self, "Roll for characteristic", "Roll again: 1-3 = +1 Strength; 4-6 = +1 Attack.", 1, 1, 6, 1)
+                            if okPressed and roll2 <= 3:
+                                event.skill.strength = 1
+                                event.description = event.description[:-4] + f"Character gained +1 Strength"
+                            if okPressed and roll2 >= 4:
+                                pass
+                                # add +1 to Attack
+                        elif roll1 == 7:
+                            items = ["Weapon Skill", "Ballistic Skill"]
+                            choice, okPressed = QInputDialog.getItem(self, "Choose skill", "Choose if you would prefer to add 1 to your weapon skill or to your ballistic skill", items, 0, False)
+                            if okPressed and choice == "Weapon Skill":
+                                pass
+                                # add +1 to even for weapon skill
+                            if okPressed and choice == "Ballistic Skill":
+                                pass
+                                # add +1 to even for ballistic skill
+                        elif roll1 == 8:
+                            roll2, okPressed = QInputDialog.getInt(self, "Roll for characteristic", "Roll again: 1-3 = +1 Initiative; 4-6 = +1 Leadership.", 1, 1, 6, 1)
+                            if okPressed and roll2 <= 3:
+                                pass
+                                # add +1 to initiative
+                            if okPressed and roll2 >= 4:
+                                pass
+                                # add +1 to leadership
+                        elif roll1 == 9:
+                            roll2, okPressed = QInputDialog.getInt(self, "Roll for characteristic", "Roll again: 1-3 = +1 Wound; 4-6 = +1 Toughness.", 1, 1, 6, 1)
+                            if okPressed and roll2 <= 3:
+                                pass
+                                # add +1 to wound
+                            if okPressed and roll2 >= 4:
+                                pass
+                                # add +1 to toughness
+
+                if currentunit.ishero == False:
+                    NotImplemented
+
+                self.mainwindow.initUI()
+
             # input dialog with process and choice add skill or add characteristic
 
             # input dialog for the process of adding a skill and input items combobox
