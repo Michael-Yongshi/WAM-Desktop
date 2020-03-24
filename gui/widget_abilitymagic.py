@@ -104,33 +104,33 @@ class WidgetAbility(QBorderlessFrame):
                     """
         def create_ability_for_unit():
             abilitydict = load_reference("abilities")
-            sources = []
-            for key in abilitydict:
-                sources.append(key)
-
-            source, okPressed = QInputDialog.getItem(self, "Select source", "Choose a source", sources, 0, False)
-            if okPressed and source:
             
-                # get all available categories
-                categories = []
-                for key in abilitydict[source]:
-                    categories.append(key)
+            # get all available categories
+            categories = []
+            for key in abilitydict:
+                categories.append(key)
 
-                category, okPressed = QInputDialog.getItem(self, "Select category", "Choose a category", categories, 0, False)
-                if okPressed and category:
+            category, okPressed = QInputDialog.getItem(self, "Select category", "Choose a category", categories, 0, False)
+            if okPressed and category:
+
+                sources = []
+                for key in abilitydict[category]:
+                    sources.append(key)
+
+                source, okPressed = QInputDialog.getItem(self, "Select source", "Choose a source", sources, 0, False)
+                if okPressed and source:
 
                     # get all available abilities
                     abilities = []
-                    for key in abilitydict[source][category]:
+                    for key in abilitydict[category][source]:
                         abilities.append(key)
 
                     ability, okPressed = QInputDialog.getItem(self, "Create", "Choose an ability", abilities, 0, False)
                     if okPressed and ability:
-                        new_ability = Ability(
+                        new_ability = Ability.create_ability(
                             source = source,
                             category = category,
                             name = ability,
-                            description = abilitydict[source][category][ability]["description"],
                         )
                         
                         if unit.ishero == True:
