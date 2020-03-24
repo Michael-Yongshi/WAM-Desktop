@@ -237,24 +237,25 @@ def dialog_choose_item(self):
     
     datadict = load_reference("items")
     
-    sources = []
+    # categories
+    categories = []
     for key in datadict:
-        sources.append(key)
+        categories.append(key)
 
-    source, okPressed = QInputDialog.getItem(self, "Select source", "Choose a source", sources, 0, False)
-    if okPressed and source:
-    
-        # categories
-        categories = []
-        for key in datadict[source]:
-            categories.append(key)
+    category, okPressed = QInputDialog.getItem(self, "Create", "Choose a category", categories, 0, False)
+    if okPressed and category:
 
-        category, okPressed = QInputDialog.getItem(self, "Create", "Choose a category", categories, 0, False)
-        if okPressed and category:
+        # sources
+        sources = []
+        for key in datadict[category]:
+            sources.append(key)
+
+        source, okPressed = QInputDialog.getItem(self, "Select source", "Choose a source", sources, 0, False)
+        if okPressed and source:
         
             # subcategories
             subcategories = []
-            for key in datadict[source][category]:
+            for key in datadict[category][source]:
                 subcategories.append(key)
 
             subcategory, okPressed = QInputDialog.getItem(self, "Create", "Choose an item", subcategories, 0, False)
