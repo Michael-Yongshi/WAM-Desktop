@@ -105,46 +105,55 @@ class WidgetAbility(QBorderlessFrame):
         def create_ability_for_unit():
             abilitydict = load_reference("abilities")
             
-            # get all available categories
-            categories = []
+            # get all main categories
+            mains = []
             for key in abilitydict:
-                categories.append(key)
+                mains.append(key)
 
-            category, okPressed = QInputDialog.getItem(self, "Select category", "Choose a category", categories, 0, False)
-            if okPressed and category:
+            main, okPressed = QInputDialog.getItem(self, "Select Main category", "Choose a main category", mains, 0, False)
+            if okPressed and main:
 
-                sources = []
-                for key in abilitydict[category]:
-                    sources.append(key)
+                # get all available categories
+                categories = []
+                for key in abilitydict[main]:
+                    categories.append(key)
 
-                source, okPressed = QInputDialog.getItem(self, "Select source", "Choose a source", sources, 0, False)
-                if okPressed and source:
+                category, okPressed = QInputDialog.getItem(self, "Select category", "Choose a category", categories, 0, False)
+                if okPressed and category:
 
-                    # get all available abilities
-                    abilities = []
-                    for key in abilitydict[category][source]:
-                        abilities.append(key)
+                    sources = []
+                    for key in abilitydict[main][category]:
+                        sources.append(key)
 
-                    ability, okPressed = QInputDialog.getItem(self, "Create", "Choose an ability", abilities, 0, False)
-                    if okPressed and ability:
-                        new_ability = Ability.create_ability(
-                            source = source,
-                            category = category,
-                            name = ability,
-                        )
-                        
-                        if unit.ishero == True:
-                            for hero in self.mainwindow.wbid.herolist:
-                                if unit is hero:
-                                    hero.abilitylist.append(new_ability)
-                                    self.mainwindow.initUI()
-                                    
-                        else:
-                            for s in self.mainwindow.wbid.squadlist:
-                                if unit is s.henchmanlist[0]:
-                                    for henchman in s.henchmanlist:
-                                        henchman.abilitylist.append(new_ability)
-                                    self.mainwindow.initUI()
+                    source, okPressed = QInputDialog.getItem(self, "Select source", "Choose a source", sources, 0, False)
+                    if okPressed and source:
+
+                        # get all available abilities
+                        abilities = []
+                        for key in abilitydict[main][category][source]:
+                            abilities.append(key)
+
+                        ability, okPressed = QInputDialog.getItem(self, "Create", "Choose an ability", abilities, 0, False)
+                        if okPressed and ability:
+                            new_ability = Ability.create_ability(
+                                source = source,
+                                main = main,
+                                category = category,
+                                name = ability,
+                            )
+                            
+                            if unit.ishero == True:
+                                for hero in self.mainwindow.wbid.herolist:
+                                    if unit is hero:
+                                        hero.abilitylist.append(new_ability)
+                                        self.mainwindow.initUI()
+                                        
+                            else:
+                                for s in self.mainwindow.wbid.squadlist:
+                                    if unit is s.henchmanlist[0]:
+                                        for henchman in s.henchmanlist:
+                                            henchman.abilitylist.append(new_ability)
+                                        self.mainwindow.initUI()
 
         return create_ability_for_unit
 
