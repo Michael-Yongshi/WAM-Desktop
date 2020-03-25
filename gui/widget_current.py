@@ -81,10 +81,10 @@ class WidgetCurrent(QRaisedFrame):
                 'namelabel': {'row': 0, 'column': 0, 'width': 1, 'height': 1, 'text': f"Name: <b>{self.mainwindow.currentunit.name}</b>", 'tooltip': "Name", 'connect': self.create_method_change_name(self.mainwindow.currentunit.name),},
                 'catlabel': {'row': 1, 'column': 0, 'width': 1, 'height': 1, 'text': f"Category: <b>{self.mainwindow.currentunit.category}</b>", 'tooltip': "Category", 'connect': "",},
                 'pricelabel': {'row': 2, 'column': 0, 'width': 1, 'height': 1, 'text': f"Price: <b>{self.mainwindow.currentunit.price}</b>", 'tooltip': "Price", 'connect': "",},
-                'advlabel': {'row': 0, 'column': 1, 'width': 1, 'height': 1, 'text': f"Advance: <b>{self.mainwindow.currentunit.get_advance()}</b>", 'tooltip': f"Next is Advance <b>{self.mainwindow.currentunit.get_nextadvance()}</b> at experience <b> {self.mainwindow.currentunit.get_xpneeded()} </b>", 'connect': "",},
+                'advlabel': {'row': 0, 'column': 1, 'width': 1, 'height': 1, 'text': f"Advance: <b>{self.mainwindow.currentunit.get_current_advance()}</b>", 'tooltip': f"Next is Advance <b>{self.mainwindow.currentunit.get_next_advance()}</b> at experience <b> {self.mainwindow.currentunit.get_xpneeded()} </b>", 'connect': "",},
                 'explabel': {'row': 1, 'column': 1, 'width': 1, 'height': 1, 'text': f"Experience: <b>{self.mainwindow.currentunit.experience}</b>", 'tooltip': f"This characters current experience", 'connect': self.create_method_change_experience(),},
                 'maxlabel': {'row': 2, 'column': 1, 'width': 1, 'height': 1, 'text': f"Maximum: <b>{self.mainwindow.currentunit.maxcount}</b>", 'tooltip': "Maximum", 'connect': "",},
-                'levellabel': {'row': 0, 'column': 2, 'width': 1, 'height': 1, 'text': f"<b>{self.mainwindow.currentunit.show_advance_notification()}</b>", 'tooltip': self.set_advance_tooltip(), 'connect': self.set_new_advance(),},                
+                'levellabel': {'row': 0, 'column': 2, 'width': 1, 'height': 1, 'text': f"<b>{self.mainwindow.currentunit.get_levelup_notification()}</b>", 'tooltip': "", 'connect': self.create_method_levelup(),},                
                 'eventslabel': {'row': 1, 'column': 2, 'width': 1, 'height': 1, 'text': f"Events", 'tooltip': f"This characters history: <br/>{self.mainwindow.currentunit.get_historystring()}", 'connect': "",},
                 'removelabel': {'row': 2, 'column': 2, 'width': 1, 'height': 1, 'text': f"<b>Remove</b>", 'tooltip': f"Remove this character", 'connect': self.remove_unit(),},
                 }
@@ -109,113 +109,6 @@ class WidgetCurrent(QRaisedFrame):
 
             self.setToolTip("This is the currently selected unit")
             self.setLayout(currentbox)
-
-    def set_advance_tooltip(self):
-
-        # default part
-        part1 = f"Next is Advance <b>{self.mainwindow.currentunit.get_nextadvance()}</b> at experience <b> {self.mainwindow.currentunit.get_xpneeded()} </b>"
-
-        processes = load_reference("processes")
-        advance_process = processes["Core Rules"]["Advancement"]
-
-        if self.mainwindow.currentunit.ishero == True:
-            part2 = advance_process["Heroes"]["description"]
-        else:
-            part2 = advance_process["Squads"]["description"]
-        
-        tooltip = f"{part1} <br/><br/><br/> {part2}"
-        
-        return tooltip
-
-    def set_new_advance(self):
-
-        def set_new_advance():
-
-            # Check if something has to be done at all, can the unit level up
-            currentunit = self.mainwindow.currentunit
-            advance_events = currentunit.check_advance_events()
-            print(advance_events)
-
-            processes = load_reference("processes")
-            advance_process = processes["Core Rules"]["Advancement"]
-
-            if len(advance_events) > 0:
-                if currentunit.ishero == True:
-                    event = advance_events[0]
-                    roll1, okPressed = QInputDialog.getInt(self, "Roll for advance", advance_process["Heroes"]["description"], 2, 2, 12, 1)
-                    if okPressed and roll1:
-                        if roll1 <= 5 or roll1 >= 10:
-                            items = ["Ability", "Magic"]
-                            choice, okPressed = QInputDialog.getItem(self, "Choose ability or magic", "Choose if you would prefer to add ability or add magic (magic users only)", items, 0, False)
-                            if okPressed and choice == "Ability":
-                                new_ability = WidgetAbility.dialog_new_ability(self.mainwindow)
-                                currentunit.abilitylist.append(new_ability)
-                                event.description = event.description[:-4] + f"Character gained the ability {new_ability.name}"
-
-                            if okPressed and choice == "Magic":
-                                new_magic = WidgetMagic.dialog_new_magic(self.mainwindow)
-                                currentunit.magiclist.append(new_magic)
-                                event.description = event.description[:-4] + f"Character gained magic {new_magic.name}"
-                        elif roll1 == 6:
-                            roll2, okPressed = QInputDialog.getInt(self, "Roll for characteristic", "Roll again: 1-3 = +1 Strength; 4-6 = +1 Attack.", 1, 1, 6, 1)
-                            if okPressed and roll2 <= 3:
-                                event.skill.strength = 1
-                                event.description = event.description[:-4] + f"Character gained +1 Strength"
-                            if okPressed and roll2 >= 4:
-                                pass
-                                # add +1 to Attack
-                        elif roll1 == 7:
-                            items = ["Weapon Skill", "Ballistic Skill"]
-                            choice, okPressed = QInputDialog.getItem(self, "Choose skill", "Choose if you would prefer to add 1 to your weapon skill or to your ballistic skill", items, 0, False)
-                            if okPressed and choice == "Weapon Skill":
-                                pass
-                                # add +1 to even for weapon skill
-                            if okPressed and choice == "Ballistic Skill":
-                                pass
-                                # add +1 to even for ballistic skill
-                        elif roll1 == 8:
-                            roll2, okPressed = QInputDialog.getInt(self, "Roll for characteristic", "Roll again: 1-3 = +1 Initiative; 4-6 = +1 Leadership.", 1, 1, 6, 1)
-                            if okPressed and roll2 <= 3:
-                                pass
-                                # add +1 to initiative
-                            if okPressed and roll2 >= 4:
-                                pass
-                                # add +1 to leadership
-                        elif roll1 == 9:
-                            roll2, okPressed = QInputDialog.getInt(self, "Roll for characteristic", "Roll again: 1-3 = +1 Wound; 4-6 = +1 Toughness.", 1, 1, 6, 1)
-                            if okPressed and roll2 <= 3:
-                                pass
-                                # add +1 to wound
-                            if okPressed and roll2 >= 4:
-                                pass
-                                # add +1 to toughness
-
-                if currentunit.ishero == False:
-                    NotImplemented
-
-                self.mainwindow.initUI()
-
-            # input dialog with process and choice add skill or add characteristic
-
-            # input dialog for the process of adding a skill and input items combobox
-            #  adding new abilities: There are several types of skill and each has a separate list. You may not choose the same skill twice for the same warrior. The skills a Hero may have are restricted by the warband he belongs to and what type of Hero he is. To select a new skill for a Hero, pick the type of skill you want from those available, then choose which skill has been learned. 
-
-            # input dialog for the process of adding a characteristic and input items combobox
-            # Characteristics for certain warriors may not be increased beyond the maximum limits shown on the following profiles. If a characteristic is at its maximum, take the other option or roll again if you can only increase one characteristic. If both are already at their racial maximum, you may increase any other (that is not already at its racial maximum) by +1 instead. Note that this is the only way to gain the maximum Movement for some races. Remember that Henchmen can only add +1 to any characteristic.
-            
-            # insert limit of the current race (to be implemented)
-            # HUMAN (Witch Hunters, Flagellants, Mercenaries, Dregs, Freelancers, Warlocks, Pit Fighters, Magisters, Darksouls, Mutants, Brethren, Warrior Priests, Zealots, Sisters of Sigmar, etc.) Profile M WS BS S T W I A Ld Human 4 66443649 
-            # ELF (Elf Ranger Hired Sword) Profile M WS BS S T W I A Ld Elf 5 7 7 4 4 3 9 4 10 
-            # DWARF (Troll Slayer Hired Sword) Profile M WS BS S T W I A Ld Dwarf 3 7 6 4 5 3 5 4 10
-            # OGRE (Ogre Bodyguard Hired Sword) Profile M WS BS S T W I A Ld Ogre 6 65555659 
-            # HALFLING (Halfling Scout Hired Sword) Profile M WS BS S T W I A Ld Halfling 4 5 7 3 3 3 9 4 10 
-            # BEASTMAN Profile M WS BS S T W I A Ld Gor 4 7 6 4 5 4 6 4 9
-            # POSSESSED Profile M WS BS S T W I A Ld Possessed 6 8 0 6 6 4 7 5 10
-            # VAMPIRE Profile M WS BS S T W I A Ld Vampire 6 8 6 7 6 4 9 4 10
-            # SKAVEN Profile M WS BS S T W I A Ld Skaven 6 66443747 
-            # GHOUL Profile M WS BS S T W I A Ld Ghoul 5 52453557
-
-        return set_new_advance
 
     def set_namebox(self):
         namebox = QGridLayout()
@@ -308,6 +201,83 @@ class WidgetCurrent(QRaisedFrame):
                 self.mainwindow.initUI()
         
         return change_experience
+
+    def create_method_levelup(self):
+
+        def levelup():
+
+            # Check if something has to be done at all, can the unit level up
+            currentunit = self.mainwindow.currentunit
+            tbd_advance_events = currentunit.get_tbd_advance_events()
+            process = self.mainwindow.currentunit.get_advance_process()  
+
+            # check if there are any open advance events
+            if len(tbd_advance_events) > 0:
+                # get first advance event
+                event = tbd_advance_events[0]
+                # Trow roll1 (2D6)
+                roll1, okPressed = QInputDialog.getInt(self, "Roll 2D6 for advance", process, 2, 2, 12, 1)
+                if okPressed and roll1 and currentunit.ishero == True:
+                    if roll1 <= 5 or roll1 >= 10:
+                        items = ["Ability", "Magic"]
+                        choice, okPressed = QInputDialog.getItem(self, "Choose ability or magic", "Choose if you would prefer to add ability or add magic (magic users only)", items, 0, False)
+                        if okPressed and choice == "Ability":
+                            new_ability = WidgetAbility.dialog_new_ability(self.mainwindow)
+                            result = currentunit.set_event_ability(event, new_ability)
+
+                        elif okPressed and choice == "Magic":
+                            new_magic = WidgetMagic.dialog_new_magic(self.mainwindow)
+                            result = currentunit.set_event_magic(event, new_magic)
+                                           
+                    elif roll1 == 7:
+                        items = ["Weapon Skill", "Ballistic Skill"]
+                        choice, okPressed = QInputDialog.getItem(self, "Choose weapon skill or Ballistic skill", "Choose if you would prefer to add 1 to your weapon skill or to your ballistic skill", items, 0, False)
+                        if okPressed and choice:
+                            result = currentunit.set_event_roll7(event, choice)
+
+                    elif roll1 == 6 or roll1 == 8 or roll1 == 9:
+                        if roll1 == 6:
+                            characteristics = "strength or attack."
+                        elif roll1 == 8:
+                            characteristics = "initiative or leadership."
+                        elif roll1 == 9:
+                            characteristics = "wounds or toughness"
+
+                        roll2, okPressed = QInputDialog.getInt(self, "Roll 1D6", f"Trow 1D6 to see if your character gains +1 to their {characteristics}", 1, 1, 6, 1)
+                        if okPressed and roll2:
+                            result = currentunit.set_event_characteristic(event, roll1, roll2)
+
+                    if result:
+                        message = QMessageBox.information(self, f"Character gained {event.category}!", result, QMessageBox.Ok)
+                    else:
+                        print("advancement canceled")
+
+                if currentunit.ishero == False:
+                    NotImplemented
+
+                self.mainwindow.initUI()
+
+            # input dialog with process and choice add skill or add characteristic
+
+            # input dialog for the process of adding a skill and input items combobox
+            #  adding new abilities: There are several types of skill and each has a separate list. You may not choose the same skill twice for the same warrior. The skills a Hero may have are restricted by the warband he belongs to and what type of Hero he is. To select a new skill for a Hero, pick the type of skill you want from those available, then choose which skill has been learned. 
+
+            # input dialog for the process of adding a characteristic and input items combobox
+            # Characteristics for certain warriors may not be increased beyond the maximum limits shown on the following profiles. If a characteristic is at its maximum, take the other option or roll again if you can only increase one characteristic. If both are already at their racial maximum, you may increase any other (that is not already at its racial maximum) by +1 instead. Note that this is the only way to gain the maximum Movement for some races. Remember that Henchmen can only add +1 to any characteristic.
+            
+            # insert limit of the current race (to be implemented)
+            # HUMAN (Witch Hunters, Flagellants, Mercenaries, Dregs, Freelancers, Warlocks, Pit Fighters, Magisters, Darksouls, Mutants, Brethren, Warrior Priests, Zealots, Sisters of Sigmar, etc.) Profile M WS BS S T W I A Ld Human 4 66443649 
+            # ELF (Elf Ranger Hired Sword) Profile M WS BS S T W I A Ld Elf 5 7 7 4 4 3 9 4 10 
+            # DWARF (Troll Slayer Hired Sword) Profile M WS BS S T W I A Ld Dwarf 3 7 6 4 5 3 5 4 10
+            # OGRE (Ogre Bodyguard Hired Sword) Profile M WS BS S T W I A Ld Ogre 6 65555659 
+            # HALFLING (Halfling Scout Hired Sword) Profile M WS BS S T W I A Ld Halfling 4 5 7 3 3 3 9 4 10 
+            # BEASTMAN Profile M WS BS S T W I A Ld Gor 4 7 6 4 5 4 6 4 9
+            # POSSESSED Profile M WS BS S T W I A Ld Possessed 6 8 0 6 6 4 7 5 10
+            # VAMPIRE Profile M WS BS S T W I A Ld Vampire 6 8 6 7 6 4 9 4 10
+            # SKAVEN Profile M WS BS S T W I A Ld Skaven 6 66443747 
+            # GHOUL Profile M WS BS S T W I A Ld Ghoul 5 52453557
+
+        return levelup
 
     def remove_unit(self):
         
