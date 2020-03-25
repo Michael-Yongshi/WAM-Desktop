@@ -209,60 +209,48 @@ class WidgetCurrent(QRaisedFrame):
             # Check if something has to be done at all, can the unit level up
             currentunit = self.mainwindow.currentunit
             tbd_advance_events = currentunit.get_tbd_advance_events()
-            print(tbd_advance_events)
+            process = self.mainwindow.currentunit.get_advance_process()  
 
-            process = self.mainwindow.currentunit.get_advance_process()
-
+            # check if there are any open advance events
             if len(tbd_advance_events) > 0:
-                if currentunit.ishero == True:
-                    event = tbd_advance_events[0]
-                    roll1, okPressed = QInputDialog.getInt(self, "Roll for advance", process, 2, 2, 12, 1)
-                    if okPressed and roll1:
-                        if roll1 <= 5 or roll1 >= 10:
-                            items = ["Ability", "Magic"]
-                            choice, okPressed = QInputDialog.getItem(self, "Choose ability or magic", "Choose if you would prefer to add ability or add magic (magic users only)", items, 0, False)
-                            if okPressed and choice == "Ability":
-                                new_ability = WidgetAbility.dialog_new_ability(self.mainwindow)
-                                currentunit.abilitylist.append(new_ability)
-                                event.description = event.description[:-4] + f"Character gained the ability {new_ability.name}"
+                # get first advance event
+                event = tbd_advance_events[0]
+                # Trow roll1 (2D6)
+                roll1, okPressed = QInputDialog.getInt(self, "Roll 2D6 for advance", process, 2, 2, 12, 1)
+                if okPressed and roll1 and currentunit.ishero == True:
+                    if roll1 <= 5 or roll1 >= 10:
+                        items = ["Ability", "Magic"]
+                        choice, okPressed = QInputDialog.getItem(self, "Choose ability or magic", "Choose if you would prefer to add ability or add magic (magic users only)", items, 0, False)
+                        if okPressed and choice == "Ability":
+                            new_ability = WidgetAbility.dialog_new_ability(self.mainwindow)
+                            result = currentunit.set_event_ability(event, new_ability)
 
-                            if okPressed and choice == "Magic":
-                                new_magic = WidgetMagic.dialog_new_magic(self.mainwindow)
-                                currentunit.magiclist.append(new_magic)
-                                event.description = event.description[:-4] + f"Character gained magic {new_magic.name}"
-                        elif roll1 == 6:
-                            roll2, okPressed = QInputDialog.getInt(self, "Roll for characteristic", "Roll again: 1-3 = +1 Strength; 4-6 = +1 Attack.", 1, 1, 6, 1)
-                            if okPressed and roll2 <= 3:
-                                event.skill.strength = 1
-                                event.description = event.description[:-4] + f"Character gained +1 Strength"
-                            if okPressed and roll2 >= 4:
-                                pass
-                                # add +1 to Attack
-                        elif roll1 == 7:
-                            items = ["Weapon Skill", "Ballistic Skill"]
-                            choice, okPressed = QInputDialog.getItem(self, "Choose skill", "Choose if you would prefer to add 1 to your weapon skill or to your ballistic skill", items, 0, False)
-                            if okPressed and choice == "Weapon Skill":
-                                pass
-                                # add +1 to even for weapon skill
-                            if okPressed and choice == "Ballistic Skill":
-                                pass
-                                # add +1 to even for ballistic skill
+                        elif okPressed and choice == "Magic":
+                            new_magic = WidgetMagic.dialog_new_magic(self.mainwindow)
+                            result = currentunit.set_event_magic(event, new_magic)
+                                           
+                    elif roll1 == 7:
+                        items = ["Weapon Skill", "Ballistic Skill"]
+                        choice, okPressed = QInputDialog.getItem(self, "Choose weapon skill or Ballistic skill", "Choose if you would prefer to add 1 to your weapon skill or to your ballistic skill", items, 0, False)
+                        if okPressed and choice:
+                            result = currentunit.set_event_roll7(event, choice)
+
+                    elif roll1 == 6 or roll1 == 8 or roll1 == 9:
+                        if roll1 == 6:
+                            characteristics = "strength or attack."
                         elif roll1 == 8:
-                            roll2, okPressed = QInputDialog.getInt(self, "Roll for characteristic", "Roll again: 1-3 = +1 Initiative; 4-6 = +1 Leadership.", 1, 1, 6, 1)
-                            if okPressed and roll2 <= 3:
-                                pass
-                                # add +1 to initiative
-                            if okPressed and roll2 >= 4:
-                                pass
-                                # add +1 to leadership
+                            characteristics = "initiative or leadership."
                         elif roll1 == 9:
-                            roll2, okPressed = QInputDialog.getInt(self, "Roll for characteristic", "Roll again: 1-3 = +1 Wound; 4-6 = +1 Toughness.", 1, 1, 6, 1)
-                            if okPressed and roll2 <= 3:
-                                pass
-                                # add +1 to wound
-                            if okPressed and roll2 >= 4:
-                                pass
-                                # add +1 to toughness
+                            characteristics = "wounds or toughness"
+
+                        roll2, okPressed = QInputDialog.getInt(self, "Roll 1D6", f"Trow 1D6 to see if your character gains +1 to their {characteristics}", 1, 1, 6, 1)
+                        if okPressed and roll2:
+                            result = currentunit.set_event_characteristic(event, roll1, roll2)
+
+                    if result:
+                        message = QMessageBox.information(self, f"Character gained {event.category}!", result, QMessageBox.Ok)
+                    else:
+                        print("advancement canceled")
 
                 if currentunit.ishero == False:
                     NotImplemented
