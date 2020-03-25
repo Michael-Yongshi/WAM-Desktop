@@ -211,7 +211,7 @@ class WidgetCurrent(QRaisedFrame):
             tbd_advance_events = currentunit.get_tbd_advance_events()
             print(tbd_advance_events)
 
-            process = self.currentunit.get_advance_process()
+            process = self.mainwindow.currentunit.get_advance_process()
 
             if len(tbd_advance_events) > 0:
                 if currentunit.ishero == True:
