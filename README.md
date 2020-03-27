@@ -44,13 +44,18 @@ sudo apt-get install python3-pyqt5      # ubuntu
 pip3 install --user pyinstaller         # (dev) to create an installer for desktop OS like windows, ubuntu, ios
 ```
 
+sometimes you need to run this for path to find pip package:
+```
+export PYTHONPATH="${PYTHONPATH}:/usr/local/lib/python3.6/site-packages:/usr/lib/python3.6/site-packages"
+```
+
 ### create a distribution manually: 
 ```
 python -m PyInstaller cli.py --add-data "lib/wam_core/database/references/*.json";"lib/wam_core/database/references/" --icon="gui\war_72R_icon.ico" --name WAM-Win10-64
 
-python -m PyInstaller cli.py --add-data "lib/wam_core/database/references/*.json";"lib/wam_core/database/references/" --icon="gui\war_72R_icon.ico" --name WAM-Ubuntu18-64
+pyinstaller cli.py --add-data "lib/wam_core/database/references/*.json":"lib/wam_core/database/references/" --icon="gui\war_72R_icon.ico" --name WAM-Ubuntu18-64
 ```
-<!-- python -m PyInstaller cli.py --add-data "database/saves/cache.json";"database/saves/" --add-data "database/references/*.json";"database/references/" --icon="source\war_72R_icon.ico" --name WAM_OF --onefile -->
+
 
 ### create a distribution from spec with 
 ```
