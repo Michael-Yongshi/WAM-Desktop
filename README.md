@@ -23,10 +23,10 @@ Unzip the folder and run the exe / app file within.
 ```
 pip3 install --user pyqt5
 apt-get install python3 pyqt5           # (prod) if pip3 doesn't work
+sudo apt-get install python3-pyqt5      # ubuntu
 ```
 
 ## Running the tests
-
 
 
 ### Break down into end to end tests
