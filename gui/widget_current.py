@@ -213,11 +213,11 @@ class WidgetCurrent(QRaisedFrame):
 
             # check if there are any open advance events
             if len(tbd_advance_events) > 0:
-                # get first advance event
-                event = tbd_advance_events[0]
                 # Trow roll1 (2D6)
                 roll1, okPressed = QInputDialog.getInt(self, "Roll 2D6 for advance", process, 2, 2, 12, 1)
                 if okPressed and roll1 and currentunit.ishero == True:
+                    # get first advance event of the hero
+                    event = tbd_advance_events[0]
                     if roll1 <= 5 or roll1 >= 10:
                         items = ["Ability", "Magic"]
                         choice, okPressed = QInputDialog.getItem(self, "Choose ability or magic", "Choose if you would prefer to add ability or add magic (magic users only)", items, 0, False)
@@ -252,8 +252,58 @@ class WidgetCurrent(QRaisedFrame):
                     else:
                         print("advancement canceled")
 
-                if currentunit.ishero == False:
-                    NotImplemented
+
+
+
+                # Trow roll1 (2D6)
+                elif okPressed and roll1 and currentunit.ishero == False:
+                    # get squad
+                    for squad in self.mainwindow.wbid.squadlist:
+                        if currentunit is squad.henchmanlist[0]:
+                            currentsquad = squad
+                    
+                    for henchman in currentsquad.henchmanlist:
+
+                        # get first advance event of the henchman
+                        event = tbd_advance_events[0]
+
+                        if roll1 >= 10 or roll1 <= 12:
+                            print("the lads got talent")
+
+                        elif roll1 >= 6 and roll1 <= 7:
+                            items = ["Weapon Skill", "Ballistic Skill"]
+                            choice, okPressed = QInputDialog.getItem(self, "Choose weapon skill or Ballistic skill", "Choose if you would prefer to add 1 to your weapon skill or to your ballistic skill", items, 0, False)
+                            if okPressed and choice:
+                                result = currentunit.set_event_roll7(event, choice)
+
+                        elif (roll1 >= 2 and roll1 <=6) or roll1 == 8 or roll1 == 9:
+                            if roll1 <= 4:
+                                characteristics = "initiative"
+                                roll1 == 8
+                                roll2 == 1
+                            elif roll1 == 5:
+                                characteristics = "strength"
+                                roll1 == 6
+                                roll2 == 1
+                            elif roll1 == 8:
+                                characteristics = "attack"
+                                roll1 == 6
+                                roll2 == 6
+                            elif roll1 == 9:
+                                characteristics = "leadership"
+                                roll1 == 8
+                                roll2 == 6
+                            result = currentunit.set_event_characteristic(event, roll1, roll2)
+
+                        if result:
+                            message = QMessageBox.information(self, f"Character gained {event.category}!", result, QMessageBox.Ok)
+                        else:
+                            print("advancement canceled")
+                else:
+                    print("advancement canceled")
+
+
+
 
                 self.mainwindow.initUI()
 
