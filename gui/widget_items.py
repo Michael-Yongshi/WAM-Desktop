@@ -171,26 +171,19 @@ class WidgetItemsUnit(QBorderlessFrame):
         def new():
             new_item = dialog_choose_item(self)
             if new_item != "Cancel":
-                itemprice = new_item.price
-                if self.mainwindow.wbid.treasury.gold >= itemprice:
-                    
-                    if unit.ishero == True:
-                        for hero in self.mainwindow.wbid.herolist:
-                            if unit is hero:
-                                hero.itemlist.append(new_item)
-                                self.mainwindow.wbid.treasury.gold -= itemprice
-                                self.mainwindow.initUI()
+                if unit.ishero == True:
+                    message = unit.buy_item(self.mainwindow.wbid, new_item)
 
-                    if unit.ishero == False:
-                        for squad in self.mainwindow.wbid.squadlist:
-                            if unit is squad.henchmanlist[0]:
-                                for henchman in squad.henchmanlist:
-                                    henchman.itemlist.append(new_item)
-                                    self.mainwindow.wbid.treasury.gold -= itemprice
-                                self.mainwindow.initUI()
-
-                else:
+                elif unit.ishero == False:
+                    for squad in self.mainwindow.wbid.squadlist:
+                        if unit is squad.henchmanlist[0]:
+                            message = squad.buy_item(self.mainwindow.wbid, new_item)
+                            break
+                
+                if message == "Lack of funds!":
                     message = QMessageBox.information(self, 'Lack of funds!', "Can't add new item, lack of funds", QMessageBox.Ok)
+                
+                self.mainwindow.initUI()
             
         return new
 
@@ -201,33 +194,16 @@ class WidgetItemsUnit(QBorderlessFrame):
 
             remove = QMessageBox.question(self, 'Remove item', f"Do you want to remove this item?", QMessageBox.Yes | QMessageBox.No)
             if remove == QMessageBox.Yes:
-                process_gold = QMessageBox.question(self, "Process gold", "Do you want to process an exchange for gold?", QMessageBox.Yes | QMessageBox.No)
-                itemprice = 0
 
                 if unit.ishero == True:
-                    for hero in self.mainwindow.wbid.herolist:
-                        if unit is hero:
-                            for i in hero.itemlist:
-                                if i is item:
-                                    if process_gold == QMessageBox.Yes:
-                                        itemprice += item.price
-                                    index = hero.itemlist.index(i)
-                                    hero.itemlist.pop(index)
-                                    break
+                    unit.sell_item(self.mainwindow.wbid, item.subcategory)
 
                 elif unit.ishero == False:
                     for squad in self.mainwindow.wbid.squadlist:
                         if unit is squad.henchmanlist[0]:
-                            for henchman in squad.henchmanlist:
-                                for i in henchman.itemlist:
-                                    if i.subcategory == item.subcategory:
-                                        if process_gold == QMessageBox.Yes:
-                                            itemprice += item.price
-                                        index = henchman.itemlist.index(i)
-                                        henchman.itemlist.pop(index)
-                                        break
+                            squad.sell_item(self.mainwindow.wbid, item.subcategory)
+                            break
 
-                self.mainwindow.wbid.treasury.gold += itemprice
                 self.mainwindow.initUI()
         
         return remove

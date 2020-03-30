@@ -249,8 +249,7 @@ class WidgetCurrent(QRaisedFrame):
 
                     if result:
                         message = QMessageBox.information(self, f"Character gained {event.category}!", result, QMessageBox.Ok)
-                    else:
-                        print("advancement canceled")
+
 
 
 
@@ -265,35 +264,36 @@ class WidgetCurrent(QRaisedFrame):
                     for henchman in currentsquad.henchmanlist:
 
                         # get first advance event of the henchman
-                        event = tbd_advance_events[0]
+                        event = henchman.get_tbd_advance_events()[0]
 
-                        if roll1 >= 10 or roll1 <= 12:
+                        if roll1 >= 10 and roll1 <= 12:
                             print("the lads got talent")
+                            result = ""
 
                         elif roll1 >= 6 and roll1 <= 7:
                             items = ["Weapon Skill", "Ballistic Skill"]
                             choice, okPressed = QInputDialog.getItem(self, "Choose weapon skill or Ballistic skill", "Choose if you would prefer to add 1 to your weapon skill or to your ballistic skill", items, 0, False)
                             if okPressed and choice:
-                                result = currentunit.set_event_roll7(event, choice)
+                                result = henchman.set_event_roll7(event, choice)
 
-                        elif (roll1 >= 2 and roll1 <=6) or roll1 == 8 or roll1 == 9:
-                            if roll1 <= 4:
+                        else:
+                            if roll1 >= 2 and roll1 <= 4:
                                 characteristics = "initiative"
-                                roll1 == 8
-                                roll2 == 1
+                                roll1 = 8
+                                roll2 = 1
                             elif roll1 == 5:
                                 characteristics = "strength"
-                                roll1 == 6
-                                roll2 == 1
+                                roll1 = 6
+                                roll2 = 1
                             elif roll1 == 8:
                                 characteristics = "attack"
-                                roll1 == 6
-                                roll2 == 6
+                                roll1 = 6
+                                roll2 = 6
                             elif roll1 == 9:
                                 characteristics = "leadership"
-                                roll1 == 8
-                                roll2 == 6
-                            result = currentunit.set_event_characteristic(event, roll1, roll2)
+                                roll1 = 8
+                                roll2 = 6
+                            result = henchman.set_event_characteristic(event, roll1, roll2)
 
                         if result:
                             message = QMessageBox.information(self, f"Character gained {event.category}!", result, QMessageBox.Ok)
