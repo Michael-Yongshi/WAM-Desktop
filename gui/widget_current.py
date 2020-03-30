@@ -61,6 +61,7 @@ from lib.wam_core.source.class_hierarchy import (
     Skill,
     Ability,
     Magic,
+    Event,
     )
 
 from gui.widget_template import *
@@ -260,27 +261,43 @@ class WidgetCurrent(QRaisedFrame):
                     if result:
                         message = QMessageBox.information(self, f"Character gained {event.category}!", result, QMessageBox.Ok)
 
-
-
-
-
                 # Trow roll1 (2D6)
                 elif okPressed and roll1 and currentunit.ishero == False:
                     # get squad
                     for squad in self.mainwindow.wbid.squadlist:
                         if currentunit is squad.henchmanlist[0]:
                             currentsquad = squad
-                    
+                            break
+
+                    if roll1 >= 10 and roll1 <= 12:
+
+                        currentunit.ishero = True
+                        self.mainwindow.wbid.herolist += [currentunit]
+                        currentunit.eventlist.append(Event.create_event(
+                            category = "Became Hero", 
+                            skill = Skill.create_skill_empty(), 
+                            description = "This character showed to be above its peers and became a hero of its people!"
+                        ))
+                        index = currentsquad.henchmanlist.index(currentunit)
+                        currentsquad.henchmanlist.pop(index)
+
+                        if currentsquad.get_totalhenchman() == 0:
+                            index = self.mainwindow.wbid.squadlist.index(currentsquad)
+                            self.mainwindow.wbid.squadlist.pop(index)
+                            print(f"squad {currentsquad.name} lost all its henchmen")
+
+                        result = f"A member of your squad {currentsquad.name} proved himself beyond his peers and became a hero!"
+                        self.mainwindow.initUI()
+
+                        # Trow roll1 (2D6)
+                        roll1, okPressed = QInputDialog.getInt(self, "Roll 2D6 for advance", process, 2, 2, 9, 1)
+
                     for henchman in currentsquad.henchmanlist:
 
                         # get first advance event of the henchman
                         event = henchman.get_tbd_advance_events()[0]
 
-                        if roll1 >= 10 and roll1 <= 12:
-                            print("the lads got talent")
-                            result = ""
-
-                        elif roll1 >= 6 and roll1 <= 7:
+                        if roll1 >= 6 and roll1 <= 7:
                             items = ["Weapon Skill", "Ballistic Skill"]
                             choice, okPressed = QInputDialog.getItem(self, "Choose weapon skill or Ballistic skill", "Choose if you would prefer to add 1 to your weapon skill or to your ballistic skill", items, 0, False)
                             if okPressed and choice:
