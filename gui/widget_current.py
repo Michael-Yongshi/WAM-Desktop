@@ -61,6 +61,7 @@ from lib.wam_core.source.class_hierarchy import (
     Skill,
     Ability,
     Magic,
+    Event,
     )
 
 from gui.widget_template import *
@@ -195,10 +196,20 @@ class WidgetCurrent(QRaisedFrame):
     def create_method_change_experience(self):
         
         def change_experience():
+
+            unit = self.mainwindow.currentunit
+
             change_experience, okPressed = QInputDialog.getInt(self, "Change Experience", "How much to increase the experience?", 0, -99, 99, 1)
             if okPressed and change_experience:
-                self.mainwindow.currentunit.add_experience(change_experience)
-                self.mainwindow.initUI()
+                if unit.ishero == True:
+                    unit.add_experience(change_experience)
+                    self.mainwindow.initUI()
+                else:
+                    for squad in self.mainwindow.wbid.squadlist:
+                        if unit is squad.henchmanlist[0]:
+                            squad.add_experience(change_experience)
+                            self.mainwindow.initUI()
+                            break
         
         return change_experience
 
@@ -213,11 +224,11 @@ class WidgetCurrent(QRaisedFrame):
 
             # check if there are any open advance events
             if len(tbd_advance_events) > 0:
-                # get first advance event
-                event = tbd_advance_events[0]
                 # Trow roll1 (2D6)
                 roll1, okPressed = QInputDialog.getInt(self, "Roll 2D6 for advance", process, 2, 2, 12, 1)
                 if okPressed and roll1 and currentunit.ishero == True:
+                    # get first advance event of the hero
+                    event = tbd_advance_events[0]
                     if roll1 <= 5 or roll1 >= 10:
                         items = ["Ability", "Magic"]
                         choice, okPressed = QInputDialog.getItem(self, "Choose ability or magic", "Choose if you would prefer to add ability or add magic (magic users only)", items, 0, False)
@@ -247,13 +258,79 @@ class WidgetCurrent(QRaisedFrame):
                         if okPressed and roll2:
                             result = currentunit.set_event_characteristic(event, roll1, roll2)
 
-                    if result:
+                    message = QMessageBox.information(self, f"Character gained {event.category}!", result, QMessageBox.Ok)
+
+                # Trow roll1 (2D6)
+                elif okPressed and roll1 and currentunit.ishero == False:
+                    # get squad
+                    for squad in self.mainwindow.wbid.squadlist:
+                        if currentunit is squad.henchmanlist[0]:
+                            currentsquad = squad
+                            break
+
+                    Squadalive = True
+                    if roll1 >= 10 and roll1 <= 12:
+
+                        currentunit.ishero = True
+                        self.mainwindow.wbid.herolist += [currentunit]
+                        currentunit.eventlist.append(Event.create_event(
+                            category = "Became Hero", 
+                            skill = Skill.create_skill_empty(), 
+                            description = "This character showed to be above its peers and became a hero of its people!"
+                        ))
+                        index = currentsquad.henchmanlist.index(currentunit)
+                        currentsquad.henchmanlist.pop(index)
+
+                        result = f"A member of your squad {currentsquad.name} proved himself beyond his peers and became a hero!"
+                        message = QMessageBox.information(self, f"This lads got talent!", result, QMessageBox.Ok)
+
+                        if currentsquad.get_totalhenchman() == 0:
+                            index = self.mainwindow.wbid.squadlist.index(currentsquad)
+                            self.mainwindow.wbid.squadlist.pop(index)
+                            Squadalive = False
+
+                        self.mainwindow.initUI()
+
+                        # Trow roll1 (2D6)
+                        if Squadalive == True:
+                            roll1, okPressed = QInputDialog.getInt(self, "Roll 2D6 for advance", process, 2, 2, 9, 1)
+
+                    if Squadalive == True:
+                        for henchman in currentsquad.henchmanlist:
+
+                            # get first advance event of the henchman
+                            event = henchman.get_tbd_advance_events()[0]
+
+                            if roll1 >= 6 and roll1 <= 7:
+                                items = ["Weapon Skill", "Ballistic Skill"]
+                                choice, okPressed = QInputDialog.getItem(self, "Choose weapon skill or Ballistic skill", "Choose if you would prefer to add 1 to your weapon skill or to your ballistic skill", items, 0, False)
+                                if okPressed and choice:
+                                    result = henchman.set_event_roll7(event, choice)
+
+                            else:
+                                if roll1 >= 2 and roll1 <= 4:
+                                    characteristics = "initiative"
+                                    changeroll1 = 8
+                                    changeroll2 = 1
+                                elif roll1 == 5:
+                                    characteristics = "strength"
+                                    changeroll1 = 6
+                                    changeroll2 = 1
+                                elif roll1 == 8:
+                                    characteristics = "attack"
+                                    changeroll1 = 6
+                                    changeroll2 = 6
+                                elif roll1 == 9:
+                                    characteristics = "leadership"
+                                    changeroll1 = 8
+                                    changeroll2 = 6
+                                result = henchman.set_event_characteristic(event, changeroll1, changeroll2)
+
                         message = QMessageBox.information(self, f"Character gained {event.category}!", result, QMessageBox.Ok)
                     else:
-                        print("advancement canceled")
-
-                if currentunit.ishero == False:
-                    NotImplemented
+                        message = QMessageBox.information(self, f"Squad disbanded!", f"Squad {currentsquad.name} lost all its henchmen!", QMessageBox.Ok)
+                else:
+                    print("advancement canceled")
 
                 self.mainwindow.initUI()
 
