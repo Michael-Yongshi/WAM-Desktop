@@ -195,10 +195,20 @@ class WidgetCurrent(QRaisedFrame):
     def create_method_change_experience(self):
         
         def change_experience():
+
+            unit = self.mainwindow.currentunit
+
             change_experience, okPressed = QInputDialog.getInt(self, "Change Experience", "How much to increase the experience?", 0, -99, 99, 1)
             if okPressed and change_experience:
-                self.mainwindow.currentunit.add_experience(change_experience)
-                self.mainwindow.initUI()
+                if unit.ishero == True:
+                    unit.add_experience(change_experience)
+                    self.mainwindow.initUI()
+                else:
+                    for squad in self.mainwindow.wbid.squadlist:
+                        if unit is squad.henchmanlist[0]:
+                            squad.add_experience(change_experience)
+                            self.mainwindow.initUI()
+                            break
         
         return change_experience
 
@@ -279,26 +289,26 @@ class WidgetCurrent(QRaisedFrame):
                         else:
                             if roll1 >= 2 and roll1 <= 4:
                                 characteristics = "initiative"
-                                roll1 = 8
-                                roll2 = 1
+                                changeroll1 = 8
+                                changeroll2 = 1
                             elif roll1 == 5:
                                 characteristics = "strength"
-                                roll1 = 6
-                                roll2 = 1
+                                changeroll1 = 6
+                                changeroll2 = 1
                             elif roll1 == 8:
                                 characteristics = "attack"
-                                roll1 = 6
-                                roll2 = 6
+                                changeroll1 = 6
+                                changeroll2 = 6
                             elif roll1 == 9:
                                 characteristics = "leadership"
-                                roll1 = 8
-                                roll2 = 6
-                            result = henchman.set_event_characteristic(event, roll1, roll2)
+                                changeroll1 = 8
+                                changeroll2 = 6
+                            result = henchman.set_event_characteristic(event, changeroll1, changeroll2)
 
-                        if result:
-                            message = QMessageBox.information(self, f"Character gained {event.category}!", result, QMessageBox.Ok)
-                        else:
-                            print("advancement canceled")
+                    if result:
+                        message = QMessageBox.information(self, f"Character gained {event.category}!", result, QMessageBox.Ok)
+                    else:
+                        print("advancement canceled")
                 else:
                     print("advancement canceled")
 
