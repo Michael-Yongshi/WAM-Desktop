@@ -258,8 +258,7 @@ class WidgetCurrent(QRaisedFrame):
                         if okPressed and roll2:
                             result = currentunit.set_event_characteristic(event, roll1, roll2)
 
-                    if result:
-                        message = QMessageBox.information(self, f"Character gained {event.category}!", result, QMessageBox.Ok)
+                    message = QMessageBox.information(self, f"Character gained {event.category}!", result, QMessageBox.Ok)
 
                 # Trow roll1 (2D6)
                 elif okPressed and roll1 and currentunit.ishero == False:
@@ -269,6 +268,7 @@ class WidgetCurrent(QRaisedFrame):
                             currentsquad = squad
                             break
 
+                    Squadalive = True
                     if roll1 >= 10 and roll1 <= 12:
 
                         currentunit.ishero = True
@@ -281,56 +281,56 @@ class WidgetCurrent(QRaisedFrame):
                         index = currentsquad.henchmanlist.index(currentunit)
                         currentsquad.henchmanlist.pop(index)
 
+                        result = f"A member of your squad {currentsquad.name} proved himself beyond his peers and became a hero!"
+                        message = QMessageBox.information(self, f"This lads got talent!", result, QMessageBox.Ok)
+
                         if currentsquad.get_totalhenchman() == 0:
                             index = self.mainwindow.wbid.squadlist.index(currentsquad)
                             self.mainwindow.wbid.squadlist.pop(index)
-                            print(f"squad {currentsquad.name} lost all its henchmen")
+                            Squadalive = False
 
-                        result = f"A member of your squad {currentsquad.name} proved himself beyond his peers and became a hero!"
                         self.mainwindow.initUI()
 
                         # Trow roll1 (2D6)
-                        roll1, okPressed = QInputDialog.getInt(self, "Roll 2D6 for advance", process, 2, 2, 9, 1)
+                        if Squadalive == True:
+                            roll1, okPressed = QInputDialog.getInt(self, "Roll 2D6 for advance", process, 2, 2, 9, 1)
 
-                    for henchman in currentsquad.henchmanlist:
+                    if Squadalive == True:
+                        for henchman in currentsquad.henchmanlist:
 
-                        # get first advance event of the henchman
-                        event = henchman.get_tbd_advance_events()[0]
+                            # get first advance event of the henchman
+                            event = henchman.get_tbd_advance_events()[0]
 
-                        if roll1 >= 6 and roll1 <= 7:
-                            items = ["Weapon Skill", "Ballistic Skill"]
-                            choice, okPressed = QInputDialog.getItem(self, "Choose weapon skill or Ballistic skill", "Choose if you would prefer to add 1 to your weapon skill or to your ballistic skill", items, 0, False)
-                            if okPressed and choice:
-                                result = henchman.set_event_roll7(event, choice)
+                            if roll1 >= 6 and roll1 <= 7:
+                                items = ["Weapon Skill", "Ballistic Skill"]
+                                choice, okPressed = QInputDialog.getItem(self, "Choose weapon skill or Ballistic skill", "Choose if you would prefer to add 1 to your weapon skill or to your ballistic skill", items, 0, False)
+                                if okPressed and choice:
+                                    result = henchman.set_event_roll7(event, choice)
 
-                        else:
-                            if roll1 >= 2 and roll1 <= 4:
-                                characteristics = "initiative"
-                                changeroll1 = 8
-                                changeroll2 = 1
-                            elif roll1 == 5:
-                                characteristics = "strength"
-                                changeroll1 = 6
-                                changeroll2 = 1
-                            elif roll1 == 8:
-                                characteristics = "attack"
-                                changeroll1 = 6
-                                changeroll2 = 6
-                            elif roll1 == 9:
-                                characteristics = "leadership"
-                                changeroll1 = 8
-                                changeroll2 = 6
-                            result = henchman.set_event_characteristic(event, changeroll1, changeroll2)
+                            else:
+                                if roll1 >= 2 and roll1 <= 4:
+                                    characteristics = "initiative"
+                                    changeroll1 = 8
+                                    changeroll2 = 1
+                                elif roll1 == 5:
+                                    characteristics = "strength"
+                                    changeroll1 = 6
+                                    changeroll2 = 1
+                                elif roll1 == 8:
+                                    characteristics = "attack"
+                                    changeroll1 = 6
+                                    changeroll2 = 6
+                                elif roll1 == 9:
+                                    characteristics = "leadership"
+                                    changeroll1 = 8
+                                    changeroll2 = 6
+                                result = henchman.set_event_characteristic(event, changeroll1, changeroll2)
 
-                    if result:
                         message = QMessageBox.information(self, f"Character gained {event.category}!", result, QMessageBox.Ok)
                     else:
-                        print("advancement canceled")
+                        message = QMessageBox.information(self, f"Squad disbanded!", f"Squad {currentsquad.name} lost all its henchmen!", QMessageBox.Ok)
                 else:
                     print("advancement canceled")
-
-
-
 
                 self.mainwindow.initUI()
 
