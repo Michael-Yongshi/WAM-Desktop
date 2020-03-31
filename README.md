@@ -18,6 +18,9 @@ Unzip the folder and run the exe / app file within.
 
 ## Development
 
+see for some basic installation stuff in wam_core:
+https://github.com/Michael-Yongshi/WAM-Core/README.md#git
+
 ### GUI requisites
 
 ```
