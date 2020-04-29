@@ -3,8 +3,6 @@ The desktop frontend for the WAM application, used for Linux, Windows and MacOS.
 
 Uses WAM-Core as a submodule
 https://github.com/Michael-Yongshi/WAM-Core.git
-Which in turn uses WAM-Library-NFC as a submodule
-https://github.com/Michael-Yongshi/WAM-Library-NFC.git
 
 
 ## Roadmap
