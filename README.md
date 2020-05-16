@@ -89,7 +89,7 @@ See also the list of [contributors](https://github.com/your/project/contributors
 
 Licensed under GPL-3.0-or-later, see LICENSE file for details.
 
-Copyright © 2020 WAM_Desktop contributors.
+Copyright © 2020 WAM-Desktop contributors.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
