@@ -9,11 +9,8 @@ https://github.com/Michael-Yongshi/WAM-Core.git
 
 ## Getting Started
 
-To install a working desktop application grab the zip folder from:
-
-<b>Windows 10 64 bit</b>: https://www.jottacloud.com/s/13030f55cae66fb428698777e670d3a052a. 
-
-<b>Ubuntu 18 64 bit</b>: https://www.jottacloud.com/s/130ab5742a54b87443a896a37062196affa.
+To install a working desktop application grab the zip folder from the release page:
+https://github.com/Michael-Yongshi/WAM-Desktop/releases
 
 Unzip the folder and run the exe / app file within.
 
