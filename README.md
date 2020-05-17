@@ -6,6 +6,9 @@ https://github.com/Michael-Yongshi/WAM-Core.git
 
 
 ## Roadmap
+- Add more warbands from broheim.net/warbands
+- test if mutations work correctly
+- adjust code for individual henchmen
 
 ## Getting Started
 
