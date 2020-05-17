@@ -17,7 +17,7 @@ https://github.com/Michael-Yongshi/WAM-Desktop/releases
 
 Latest release:
 -Win10-64: https://www.jottacloud.com/s/130dc76091c06c94f73a7b79378122252f5
--Ubuntu18-64: https://www.jottacloud.com/s/130ab5742a54b87443a896a37062196affa
+-Ubuntu18-64: https://www.jottacloud.com/s/13099be5dc95aae4139a0ca0328c19b71cf
 
 Unzip the folder and run the exe / app file within.
 
