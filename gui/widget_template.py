@@ -1,40 +1,21 @@
-# import sys
 
 from PyQt5.QtCore import (
-    # QRect,
     Qt,
     pyqtSignal,
     )
 
 from PyQt5.QtWidgets import (
-    QAction,
     QApplication,
-    QDesktopWidget,
     QFrame,
-    QGridLayout,
-    QHBoxLayout,
     QInputDialog,
     QLabel,
-    QLineEdit,
-    QListWidget,
-    QListWidgetItem,
-    QMainWindow,
     QMessageBox,
-    QPushButton, 
-    QSizePolicy,
-    QTableWidget,
-    QTableWidgetItem,
-    QTextEdit,
-    QToolTip, 
-    QVBoxLayout,
     QWidget, 
     )
 
 from PyQt5.QtGui import (
     QColor,
-    QFont,
-    QFontDatabase,
-    QIcon,
+    QCursor,
     QPalette,
     )
 
