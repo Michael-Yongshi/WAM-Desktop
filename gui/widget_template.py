@@ -100,9 +100,53 @@ class QDarkPalette(QPalette):
         self.setColor(QPalette.ToolTipBase, QColor(255, 255, 255))  #white
         self.setColor(QPalette.ToolTipText, QColor(255, 255, 255))  #white
         self.setColor(QPalette.Text, QColor(255, 255, 255))         #white
-        self.setColor(QPalette.Button, QColor(53, 53, 53))          #dark grey
+        self.setColor(QPalette.Button, QColor(25, 25, 25))          #dark grey
         self.setColor(QPalette.ButtonText, QColor(255, 255, 255))   #white
         self.setColor(QPalette.BrightText, QColor(255, 0, 0))       #red
         self.setColor(QPalette.Link, QColor(42, 130, 218))          #blue
         self.setColor(QPalette.Highlight, QColor(42, 130, 218))     #blue
         self.setColor(QPalette.HighlightedText, QColor(0, 0, 0))    #black
+
+        # If item is disabled, use alternative colours
+        self.setColor(QPalette.Disabled, QPalette.Button, QColor(53, 53, 53))       #dark grey
+        self.setColor(QPalette.Disabled, QPalette.ButtonText, QColor(25, 25, 25))   #darker grey
+
+class Decorators(object):
+
+    @staticmethod
+    def loading_cursor(normal_function):
+
+        def decorated_function(*args, **kwargs):
+
+            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+
+            normal_function(*args, **kwargs)
+
+            QApplication.restoreOverrideCursor()
+
+        return decorated_function
+
+    @staticmethod
+    def user_input_interruption(normal_function):
+
+        def decorated_function(*args, **kwargs):
+
+            QApplication.restoreOverrideCursor()
+
+            normal_function(*args, **kwargs)
+
+            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+
+        return decorated_function
+
+class QInputDialogUserInterruption(QInputDialog):
+    def __init__(self):
+        super().__init__()
+
+    @Decorators.user_input_interruption
+    def example_input(self):
+        self.result, self.okPressed = QInputDialog.getInt(self, "template user input dialog", "text")
+
+    @Decorators.user_input_interruption
+    def example_msgbox(self):
+        QMessageBox.information(self, 'example messagebox', "text", QMessageBox.Ok)
