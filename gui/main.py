@@ -41,9 +41,6 @@ from lib.wam_core.source.class_hierarchy import (
     Character,
     Hero,
     Henchman,
-    )
-
-from lib.wam_core.source.class_hierarchy import (
     Rule,
     Treasury,
     Item,

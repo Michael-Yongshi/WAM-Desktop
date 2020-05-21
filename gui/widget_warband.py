@@ -1,15 +1,11 @@
-import sys
 
 from PyQt5.QtCore import (
-    QRect,
     Qt,
     pyqtSignal,
     )
 
 from PyQt5.QtWidgets import (
-    QAction,
     QApplication,
-    QDesktopWidget,
     QDialog,
     QDialogButtonBox,
     QFrame,
@@ -17,28 +13,20 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QInputDialog,
     QLabel,
-    QLineEdit,
-    QListWidget,
-    QListWidgetItem,
     QMainWindow,
     QMessageBox,
+    QProgressBar,
     QPushButton, 
     QSizePolicy,
-    QTableWidget,
-    QTableWidgetItem,
     QTextEdit,
-    QTextEdit,
-    QToolTip, 
     QVBoxLayout,
     QWidget, 
     )
 
 from PyQt5.QtGui import (
-    QColor,
     QFont,
     QFontDatabase,
     QIcon,
-    QPalette,
     )
 
 from lib.wam_core.source.methods_engine import (
@@ -55,9 +43,6 @@ from lib.wam_core.source.class_hierarchy import (
     Character,
     Hero,
     Henchman,
-    )
-
-from lib.wam_core.source.class_hierarchy import (
     Rule,
     Treasury,
     Item,

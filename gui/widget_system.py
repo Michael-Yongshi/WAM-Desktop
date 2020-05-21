@@ -1,41 +1,30 @@
 import sys
 
 from PyQt5.QtCore import (
-    QRect,
     Qt,
     pyqtSignal,
     )
 
 from PyQt5.QtWidgets import (
-    QAction,
     QApplication,
-    QDesktopWidget,
     QFrame,
     QGridLayout,
     QHBoxLayout,
     QInputDialog,
     QLabel,
-    QLineEdit,
-    QListWidget,
-    QListWidgetItem,
     QMainWindow,
     QMessageBox,
+    QProgressBar,
     QPushButton, 
     QSizePolicy,
-    QTableWidget,
-    QTableWidgetItem,
-    QTextEdit,
-    QToolTip, 
     QVBoxLayout,
     QWidget, 
     )
 
 from PyQt5.QtGui import (
-    QColor,
     QFont,
     QFontDatabase,
     QIcon,
-    QPalette,
     )
 
 from lib.wam_core.source.methods_engine import (
@@ -52,9 +41,6 @@ from lib.wam_core.source.class_hierarchy import (
     Character,
     Hero,
     Henchman,
-    )
-
-from lib.wam_core.source.class_hierarchy import (
     Rule,
     Treasury,
     Item,
@@ -103,7 +89,7 @@ class WidgetSystem(QBorderedWidget):
     def call_save_warband(self):
         datadict = self.mainwindow.wbid.to_dict()
         save_warband(datadict)
-        message = QMessageBox.information(self, "Saved", "Save successful!", QMessageBox.Ok)
+        QMessageBox.information(self, "Saved", "Save successful!", QMessageBox.Ok)
 
     def choose_warband(self):
         """Choose a warband to be loaded into cache and then shown on screen"""

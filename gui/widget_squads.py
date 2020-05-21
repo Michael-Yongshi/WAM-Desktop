@@ -1,41 +1,29 @@
-import sys
 
 from PyQt5.QtCore import (
-    QRect,
     Qt,
     pyqtSignal,
     )
 
 from PyQt5.QtWidgets import (
-    QAction,
     QApplication,
-    QDesktopWidget,
     QFrame,
     QGridLayout,
     QHBoxLayout,
     QInputDialog,
     QLabel,
-    QLineEdit,
-    QListWidget,
-    QListWidgetItem,
     QMainWindow,
     QMessageBox,
+    QProgressBar,
     QPushButton, 
     QSizePolicy,
-    QTableWidget,
-    QTableWidgetItem,
-    QTextEdit,
-    QToolTip, 
     QVBoxLayout,
     QWidget, 
     )
 
 from PyQt5.QtGui import (
-    QColor,
     QFont,
     QFontDatabase,
     QIcon,
-    QPalette,
     )
 
 from lib.wam_core.source.methods_engine import (
@@ -52,9 +40,6 @@ from lib.wam_core.source.class_hierarchy import (
     Character,
     Hero,
     Henchman,
-    )
-
-from lib.wam_core.source.class_hierarchy import (
     Rule,
     Treasury,
     Item,
@@ -157,7 +142,7 @@ class WidgetSquads(QWidget):
                             self.mainwindow.wbid.treasury.gold -= deltagold
                             self.mainwindow.initUI()
                         else:
-                            message = QMessageBox.information(self, 'Lack of funds!', "Can't add new unit, lack of funds", QMessageBox.Ok)
+                            QMessageBox.information(self, 'Lack of funds!', "Can't add new unit, lack of funds", QMessageBox.Ok)
                     else:
                         self.mainwindow.initUI()
                     
@@ -233,6 +218,6 @@ class WidgetSquads(QWidget):
                         self.mainwindow.currentunit = new_squad.henchmanlist[0]
                         self.mainwindow.initUI()
                     else:
-                        message = QMessageBox.information(self, "Can't add squad!", "Lack of funds!", QMessageBox.Ok)
+                        QMessageBox.information(self, "Can't add squad!", "Lack of funds!", QMessageBox.Ok)
                 else:
-                    message = QMessageBox.information(self, "Can't add squad!", "Heroes can't be added to a squad!", QMessageBox.Ok)
+                    QMessageBox.information(self, "Can't add squad!", "Heroes can't be added to a squad!", QMessageBox.Ok)
