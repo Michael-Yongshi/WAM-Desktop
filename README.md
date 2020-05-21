@@ -57,10 +57,14 @@ export PYTHONPATH="${PYTHONPATH}:/usr/local/lib/python3.6/site-packages:/usr/lib
 ```
 
 ### create a distribution manually: 
+Windows 10 (64bit)
 ```
-python -m PyInstaller cli.py --add-data "lib/wam_core/database/references/*.json";"lib/wam_core/database/references/" --icon="gui\war_72R_icon.ico" --name WAM-Win10-64
+python -m PyInstaller cli.py --add-data "lib/wam_core/database/references/*.json";"lib/wam_core/database/references/" --icon="gui\warhammer_icon.ico" --name WAM-Win10-64
+```
 
-pyinstaller cli.py --add-data "lib/wam_core/database/references/*.json":"lib/wam_core/database/references/" --icon="gui\war_72R_icon.ico" --name WAM-Ubuntu18-64
+Ubuntu 18 (64bit)
+```
+pyinstaller cli.py --add-data "lib/wam_core/database/references/*.json":"lib/wam_core/database/references/" --icon="gui\warhammer_icon.ico" --name WAM-Ubuntu18-64
 ```
 
 
@@ -102,3 +106,8 @@ You should have received a copy of the GNU General Public License along with thi
 
 
 ## Acknowledgments
+
+### Icon
+
+Icon by Lorc under CC BY 3.0
+http://lorcblog.blogspot.com/
