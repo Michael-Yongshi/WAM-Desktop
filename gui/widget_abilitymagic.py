@@ -106,18 +106,19 @@ class WidgetAbility(QBorderlessFrame):
 
             new_ability = WidgetAbility.dialog_new_ability(self.mainwindow)
          
-            if unit.ishero == True:
-                for hero in self.mainwindow.wbid.herolist:
-                    if unit is hero:
-                        hero.abilitylist.append(new_ability)
-                        self.mainwindow.initUI()
-                        
-            else:
-                for s in self.mainwindow.wbid.squadlist:
-                    if unit is s.henchmanlist[0]:
-                        for henchman in s.henchmanlist:
-                            henchman.abilitylist.append(new_ability)
-                        self.mainwindow.initUI()
+            if new_ability:
+                if unit.ishero == True:
+                    for hero in self.mainwindow.wbid.herolist:
+                        if unit is hero:
+                            hero.abilitylist.append(new_ability)
+                            self.mainwindow.initUI()
+                            
+                else:
+                    for s in self.mainwindow.wbid.squadlist:
+                        if unit is s.henchmanlist[0]:
+                            for henchman in s.henchmanlist:
+                                henchman.abilitylist.append(new_ability)
+                            self.mainwindow.initUI()
 
         return create_ability_for_unit
 
@@ -230,18 +231,19 @@ class WidgetMagic(QBorderlessFrame):
             
             new_magic = WidgetMagic.dialog_new_magic(self.mainwindow)
 
-            if unit.ishero == True:
-                for hero in self.mainwindow.wbid.herolist:
-                    if unit is hero:
-                        hero.magiclist.append(new_magic)
-                        self.mainwindow.initUI()
-                        
-            else:
-                for s in self.mainwindow.wbid.squadlist:
-                    if unit is s.henchmanlist[0]:
-                        for henchman in s.henchmanlist:
-                            henchman.magiclist.append(new_magic)
-                        self.mainwindow.initUI()
+            if new_magic:
+                if unit.ishero == True:
+                    for hero in self.mainwindow.wbid.herolist:
+                        if unit is hero:
+                            hero.magiclist.append(new_magic)
+                            self.mainwindow.initUI()
+                            
+                else:
+                    for s in self.mainwindow.wbid.squadlist:
+                        if unit is s.henchmanlist[0]:
+                            for henchman in s.henchmanlist:
+                                henchman.magiclist.append(new_magic)
+                            self.mainwindow.initUI()
 
         return create_magic_for_unit
 
