@@ -9,6 +9,11 @@ https://github.com/Michael-Yongshi/WAM-Core.git
 #### Notice
 For Missile and Blackpowder weapons an additional strength modifier is created named 'Impact', in order to seperate the strength skill of melee and ranged attacks.
 
+## Release Notes
+Hotfix for release 1.00
+- fixed some item crashes and descriptions
+- changed blackpowder weapons from strength to impact
+
 ## Roadmap
 - Add more warbands from broheim.net/warbands
 - test if mutations work correctly
