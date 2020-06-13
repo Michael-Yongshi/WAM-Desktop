@@ -1,9 +1,13 @@
-# WAM-Desktop
+# Warhammer Army Manager (WAM) Desktop
+An application in order to create, update, view and save your warband details for use in the Mordheim Warhammer world. Using this application there is no need anymore for manually calculating skills or looking up your warbands details, including references to all item, spells, abilities, etc. that are ingame and the rules governing engagements.
+
 The desktop frontend for the WAM application, used for Linux, Windows and MacOS.
 
 Uses WAM-Core as a submodule
 https://github.com/Michael-Yongshi/WAM-Core.git
 
+#### Notice
+For Missile and Blackpowder weapons an additional strength modifier is created named 'Impact', in order to seperate the strength skill of melee and ranged attacks.
 
 ## Roadmap
 - Add more warbands from broheim.net/warbands
