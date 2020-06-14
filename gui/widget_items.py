@@ -226,6 +226,11 @@ def dialog_choose_item(self):
                     category = category,
                     source = source,
                 )
+                
+                if new_item == None:
+                    new_item = "Cancel"
+                    message = QMessageBox.information(self, f"Coulnd't add item!", f"Can't add item {subcategory} from database, please create an issue at https://github.com/Michael-Yongshi/WAM-Desktop/issues", QMessageBox.Ok)
+                
                 return new_item
                 
             else:
