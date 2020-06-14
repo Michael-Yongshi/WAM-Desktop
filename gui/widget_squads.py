@@ -134,16 +134,18 @@ class WidgetSquads(QWidget):
             if okPressed:
                 if newsize != 0:
                     deltasize = newsize - currentsize
-                    squad.change_henchman_count(deltasize)
+
                     process_gold = QMessageBox.question(self, "Process gold", "Do you want to process an exchange for gold?", QMessageBox.Yes | QMessageBox.No)
                     if process_gold == QMessageBox.Yes:
                         deltagold = deltasize * squad.henchmanlist[0].get_price()
                         if deltagold < self.mainwindow.wbid.treasury.gold:
+                            squad.change_henchman_count(deltasize)
                             self.mainwindow.wbid.treasury.gold -= deltagold
                             self.mainwindow.initUI()
                         else:
                             QMessageBox.information(self, 'Lack of funds!', "Can't add new unit, lack of funds", QMessageBox.Ok)
                     else:
+                        squad.change_henchman_count(deltasize)
                         self.mainwindow.initUI()
                     
                 else:
