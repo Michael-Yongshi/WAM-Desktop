@@ -93,14 +93,14 @@ class QDarkPalette(QPalette):
     def __init__(self, *__args):
         super().__init__(*__args)
         
-        self.setColor(QPalette.Window, QColor(53, 53, 53))          #dark grey
+        self.setColor(QPalette.Window, QColor(53, 53, 53))          #dark grey (normal background widgets and main)
         self.setColor(QPalette.WindowText, QColor(255, 255, 255))   #white
-        self.setColor(QPalette.Base, QColor(25, 25, 25))            #darker grey
-        self.setColor(QPalette.AlternateBase, QColor(53, 53, 53))   #dark grey
+        self.setColor(QPalette.Base, QColor(25, 25, 25))            #darker grey (selected text in pop up)
+        self.setColor(QPalette.AlternateBase, QColor(53, 53, 53))   #dark grey (not used far as i can see)
         self.setColor(QPalette.ToolTipBase, QColor(255, 255, 255))  #white
         self.setColor(QPalette.ToolTipText, QColor(255, 255, 255))  #white
         self.setColor(QPalette.Text, QColor(255, 255, 255))         #white
-        self.setColor(QPalette.Button, QColor(25, 25, 25))          #dark grey
+        self.setColor(QPalette.Button, QColor(53, 53, 53))          #dark grey (drop down arrow colour and tabs)
         self.setColor(QPalette.ButtonText, QColor(255, 255, 255))   #white
         self.setColor(QPalette.BrightText, QColor(255, 0, 0))       #red
         self.setColor(QPalette.Link, QColor(42, 130, 218))          #blue

@@ -16,6 +16,7 @@ from PyQt5.QtWidgets import (
     QProgressBar,
     QPushButton, 
     QSizePolicy,
+    QTabWidget,
     QVBoxLayout,
     QWidget, 
     )
@@ -81,17 +82,42 @@ class WidgetCurrent(QRaisedFrame):
             },
         }
 
-        if self.mainwindow.currentunit.ishero != "":
-            currentbox = QGridLayout()
+        if self.mainwindow.currentunit.ishero == True:
+            unitbox = QGridLayout()
 
             config = self.configfile['namebox']
-            currentbox.addWidget(self.set_namebox(), config['row'], config['column'], config['width'], config['height'])
+            unitbox.addWidget(self.set_namebox(), config['row'], config['column'], config['width'], config['height'])
 
             config = self.configfile['skillbox']
-            currentbox.addWidget(self.set_skillbox(), config['row'], config['column'], config['width'], config['height'])
+            unitbox.addWidget(self.set_skillbox(), config['row'], config['column'], config['width'], config['height'])
 
             config = self.configfile['listbox']
-            currentbox.addWidget(self.set_listbox(), config['row'], config['column'], config['width'], config['height'])
+            unitbox.addWidget(self.set_listbox(), config['row'], config['column'], config['width'], config['height'])
+
+            self.setToolTip("This is the currently selected unit")
+            self.setLayout(unitbox)
+
+        elif self.mainwindow.currentunit.ishero == False:
+            
+            currentbox = QVBoxLayout()
+            tabs = QTabWidget()
+
+            for i in range(1, 7, 1):
+
+                unitbox = QGridLayout()
+                config = self.configfile['namebox']
+                unitbox.addWidget(self.set_namebox(), config['row'], config['column'], config['width'], config['height'])
+                config = self.configfile['skillbox']
+                unitbox.addWidget(self.set_skillbox(), config['row'], config['column'], config['width'], config['height'])
+                config = self.configfile['listbox']
+                unitbox.addWidget(self.set_listbox(), config['row'], config['column'], config['width'], config['height'])
+
+                tabbox = unitbox
+                unitwidget = QWidget()
+                unitwidget.setLayout(tabbox)
+                tabs.addTab(unitwidget, f"Unit {i}")
+
+            currentbox.addWidget(tabs)
 
             self.setToolTip("This is the currently selected unit")
             self.setLayout(currentbox)
