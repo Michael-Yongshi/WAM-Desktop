@@ -20,7 +20,8 @@ Hotfix for release 1.00 - 2020-06-13
 ## Roadmap
 - Add more warbands from broheim.net/warbands
 - test if mutations work correctly
-- adjust code for individual henchmen
+- adjust code for individual henchmen (registering optional henchmen names and events)
+- add linking physical unit with app through nfc (sticker)
 
 ## Getting Started
 
