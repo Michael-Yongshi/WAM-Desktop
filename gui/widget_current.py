@@ -50,7 +50,7 @@ from lib.wam_core.source.class_hierarchy import (
     Event,
     )
 
-from gui.widget_template import *
+from guidarktheme.widget_template import *
 from gui.widget_items import WidgetItemsUnit
 from gui.widget_abilitymagic import WidgetAbility, WidgetMagic
 

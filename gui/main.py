@@ -49,7 +49,8 @@ from lib.wam_core.source.class_hierarchy import (
     Magic,
     )
 
-from gui.widget_template import *
+from guidarktheme.widget_template import *
+
 from gui.widget_warband import WidgetWarband
 from gui.widget_items import WidgetItemsWarband
 from gui.widget_system import WidgetSystem

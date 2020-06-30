@@ -80,7 +80,7 @@ from lib.wam_core.source.class_components import (
     Magic,
     )
 
-from gui.widget_template import *
+from guidarktheme.widget_template import *
 from gui.main import QMainApplication
 
 class MainReferences(QMainWindow):
