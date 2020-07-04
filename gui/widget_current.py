@@ -63,26 +63,27 @@ class WidgetCurrent(QRaisedFrame):
 
         self.mainwindow = mainwindow
 
-        self.configfile = {
-            'namebox': {'row': 0, 'column': 0, 'width': 1, 'height': 1, 'children': {
-                'namelabel': {'row': 0, 'column': 0, 'width': 1, 'height': 1, 'text': f"Name: <b>{self.mainwindow.currentunit.name}</b>", 'tooltip': "Name", 'connect': self.create_method_change_name(self.mainwindow.currentunit.name),},
-                'catlabel': {'row': 1, 'column': 0, 'width': 1, 'height': 1, 'text': f"Category: <b>{self.mainwindow.currentunit.category}</b>", 'tooltip': "Category", 'connect': "",},
-                'pricelabel': {'row': 2, 'column': 0, 'width': 1, 'height': 1, 'text': f"Price: <b>{self.mainwindow.currentunit.price}</b>", 'tooltip': "Price", 'connect': "",},
-                'advlabel': {'row': 0, 'column': 1, 'width': 1, 'height': 1, 'text': f"Advance: <b>{self.mainwindow.currentunit.get_current_advance()}</b>", 'tooltip': f"Next is Advance <b>{self.mainwindow.currentunit.get_next_advance()}</b> at experience <b> {self.mainwindow.currentunit.get_xpneeded()} </b>", 'connect': "",},
-                'explabel': {'row': 1, 'column': 1, 'width': 1, 'height': 1, 'text': f"Experience: <b>{self.mainwindow.currentunit.experience}</b>", 'tooltip': f"This characters current experience", 'connect': self.create_method_change_experience(),},
-                'maxlabel': {'row': 2, 'column': 1, 'width': 1, 'height': 1, 'text': f"Maximum: <b>{self.mainwindow.currentunit.maxcount}</b>", 'tooltip': "Maximum", 'connect': "",},
-                'levellabel': {'row': 0, 'column': 2, 'width': 1, 'height': 1, 'text': f"<b>{self.mainwindow.currentunit.get_levelup_notification()}</b>", 'tooltip': "", 'connect': self.create_method_levelup(),},                
-                'eventslabel': {'row': 1, 'column': 2, 'width': 1, 'height': 1, 'text': f"Events", 'tooltip': f"This characters history: <br/>{self.mainwindow.currentunit.get_historystring()}", 'connect': "",},
-                'removelabel': {'row': 2, 'column': 2, 'width': 1, 'height': 1, 'text': f"<b>Remove</b>", 'tooltip': f"Remove this character", 'connect': self.remove_unit(),},
-                }
-            },
-            'skillbox': {'row': 1, 'column': 0, 'width': 1, 'height': 1,
-            },
-            'listbox': {'row': 2, 'column': 0, 'width': 4, 'height': 1,
-            },
-        }
-
         if self.mainwindow.currentunit.ishero == True:
+
+            self.configfile = {
+                'namebox': {'row': 0, 'column': 0, 'width': 1, 'height': 1, 'children': {
+                    'namelabel': {'row': 0, 'column': 0, 'width': 1, 'height': 1, 'text': f"Name: <b>{self.mainwindow.currentunit.name}</b>", 'tooltip': "Name", 'connect': self.create_method_change_name(self.mainwindow.currentunit),},
+                    'catlabel': {'row': 1, 'column': 0, 'width': 1, 'height': 1, 'text': f"Category: <b>{self.mainwindow.currentunit.category}</b>", 'tooltip': "Category", 'connect': "",},
+                    'pricelabel': {'row': 2, 'column': 0, 'width': 1, 'height': 1, 'text': f"Price: <b>{self.mainwindow.currentunit.price}</b>", 'tooltip': "Price", 'connect': "",},
+                    'advlabel': {'row': 0, 'column': 1, 'width': 1, 'height': 1, 'text': f"Advance: <b>{self.mainwindow.currentunit.get_current_advance()}</b>", 'tooltip': f"Next is Advance <b>{self.mainwindow.currentunit.get_next_advance()}</b> at experience <b> {self.mainwindow.currentunit.get_xpneeded()} </b>", 'connect': "",},
+                    'explabel': {'row': 1, 'column': 1, 'width': 1, 'height': 1, 'text': f"Experience: <b>{self.mainwindow.currentunit.experience}</b>", 'tooltip': f"This characters current experience", 'connect': self.create_method_change_experience(),},
+                    'maxlabel': {'row': 2, 'column': 1, 'width': 1, 'height': 1, 'text': f"Maximum: <b>{self.mainwindow.currentunit.maxcount}</b>", 'tooltip': "Maximum", 'connect': "",},
+                    'levellabel': {'row': 0, 'column': 2, 'width': 1, 'height': 1, 'text': f"<b>{self.mainwindow.currentunit.get_levelup_notification()}</b>", 'tooltip': "", 'connect': self.create_method_levelup(),},                
+                    'eventslabel': {'row': 1, 'column': 2, 'width': 1, 'height': 1, 'text': f"Events", 'tooltip': f"This characters history: <br/>{self.mainwindow.currentunit.get_historystring()}", 'connect': "",},
+                    'removelabel': {'row': 2, 'column': 2, 'width': 1, 'height': 1, 'text': f"<b>Remove</b>", 'tooltip': f"Remove this character", 'connect': self.remove_unit(),},
+                    }
+                },
+                'skillbox': {'row': 1, 'column': 0, 'width': 1, 'height': 1,
+                },
+                'listbox': {'row': 2, 'column': 0, 'width': 4, 'height': 1,
+                },
+            }
+
             unitbox = QGridLayout()
 
             config = self.configfile['namebox']
@@ -98,29 +99,62 @@ class WidgetCurrent(QRaisedFrame):
             self.setLayout(unitbox)
 
         elif self.mainwindow.currentunit.ishero == False:
-            
-            currentbox = QVBoxLayout()
-            tabs = QTabWidget()
+            currentsquad = None
 
-            for i in range(1, 7, 1):
+            for squad in self.mainwindow.wbid.squadlist:
+                for henchman in squad.henchmanlist:
+                    if self.mainwindow.currentunit is henchman:
+                        currentsquad = squad
+                        currentunit = henchman
+                        break
+                        break
 
-                unitbox = QGridLayout()
-                config = self.configfile['namebox']
-                unitbox.addWidget(self.set_namebox(), config['row'], config['column'], config['width'], config['height'])
-                config = self.configfile['skillbox']
-                unitbox.addWidget(self.set_skillbox(), config['row'], config['column'], config['width'], config['height'])
-                config = self.configfile['listbox']
-                unitbox.addWidget(self.set_listbox(), config['row'], config['column'], config['width'], config['height'])
+            if currentsquad != None:
+                currentbox = QVBoxLayout()
+                tabs = QTabWidget()
 
-                tabbox = unitbox
-                unitwidget = QWidget()
-                unitwidget.setLayout(tabbox)
-                tabs.addTab(unitwidget, f"Unit {i}")
+                for henchman in currentsquad.henchmanlist:
 
-            currentbox.addWidget(tabs)
+                    self.configfile = {
+                        'namebox': {'row': 0, 'column': 0, 'width': 1, 'height': 1, 'children': {
+                            'namelabel': {'row': 0, 'column': 0, 'width': 1, 'height': 1, 'text': f"Name: <b>{henchman.name}</b>", 'tooltip': "Name", 'connect': self.create_method_change_name(henchman),},
+                            'catlabel': {'row': 1, 'column': 0, 'width': 1, 'height': 1, 'text': f"Category: <b>{henchman.category}</b>", 'tooltip': "Category", 'connect': "",},
+                            'pricelabel': {'row': 2, 'column': 0, 'width': 1, 'height': 1, 'text': f"Price: <b>{henchman.price}</b>", 'tooltip': "Price", 'connect': "",},
+                            'advlabel': {'row': 0, 'column': 1, 'width': 1, 'height': 1, 'text': f"Advance: <b>{henchman.get_current_advance()}</b>", 'tooltip': f"Next is Advance <b>{henchman.get_next_advance()}</b> at experience <b> {henchman.get_xpneeded()} </b>", 'connect': "",},
+                            'explabel': {'row': 1, 'column': 1, 'width': 1, 'height': 1, 'text': f"Experience: <b>{henchman.experience}</b>", 'tooltip': f"This characters current experience", 'connect': self.create_method_change_experience(),},
+                            'maxlabel': {'row': 2, 'column': 1, 'width': 1, 'height': 1, 'text': f"Maximum: <b>{henchman.maxcount}</b>", 'tooltip': "Maximum", 'connect': "",},
+                            'levellabel': {'row': 0, 'column': 2, 'width': 1, 'height': 1, 'text': f"<b>{henchman.get_levelup_notification()}</b>", 'tooltip': "", 'connect': self.create_method_levelup(),},                
+                            'eventslabel': {'row': 1, 'column': 2, 'width': 1, 'height': 1, 'text': f"Events", 'tooltip': f"This characters history: <br/>{henchman.get_historystring()}", 'connect': "",},
+                            'removelabel': {'row': 2, 'column': 2, 'width': 1, 'height': 1, 'text': f"<b>Remove</b>", 'tooltip': f"Remove this character", 'connect': self.remove_unit(),},
+                            }
+                        },
+                        'skillbox': {'row': 1, 'column': 0, 'width': 1, 'height': 1,
+                        },
+                        'listbox': {'row': 2, 'column': 0, 'width': 4, 'height': 1,
+                        },
+                    }
 
-            self.setToolTip("This is the currently selected unit")
-            self.setLayout(currentbox)
+                    unitbox = QGridLayout()
+                    config = self.configfile['namebox']
+                    unitbox.addWidget(self.set_namebox(), config['row'], config['column'], config['width'], config['height'])
+                    config = self.configfile['skillbox']
+                    unitbox.addWidget(self.set_skillbox(), config['row'], config['column'], config['width'], config['height'])
+                    config = self.configfile['listbox']
+                    unitbox.addWidget(self.set_listbox(), config['row'], config['column'], config['width'], config['height'])
+
+                    unitwidget = QWidget()
+                    unitwidget.setLayout(unitbox)
+                    tabs.addTab(unitwidget, f"{henchman.name}", )
+
+                    # set to currently selected unit
+                    lenght = tabs.__len__()
+                    if henchman is self.mainwindow.currentunit:
+                        tabs.setCurrentIndex(lenght - 1)
+
+                currentbox.addWidget(tabs)
+
+                self.setToolTip("This is the currently selected unit")
+                self.setLayout(currentbox)
 
     def set_namebox(self):
         namebox = QGridLayout()
@@ -194,12 +228,13 @@ class WidgetCurrent(QRaisedFrame):
         
         return listframe
 
-    def create_method_change_name(self, name):
+    def create_method_change_name(self, unit):
         
         def change_name():
             new_name, okPressed = QInputDialog.getText(self, "Choose a name", "Name your unit:", text="default")
             if okPressed and new_name:
-                self.mainwindow.currentunit.name = new_name
+                unit.name = new_name
+                self.mainwindow.currentunit = unit
                 self.mainwindow.initUI()
         
         return change_name
