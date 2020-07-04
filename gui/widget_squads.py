@@ -72,8 +72,10 @@ class WidgetSquads(QWidget):
             squadgrid.addWidget(numlabel, 0, 5, 1, 1)
 
             namelabel = QLabel()
-            if squad.henchmanlist[0] is self.mainwindow.currentunit:
-                namelabel.setText(f"<b>{squad.name}<br/>(selected)<b/>")
+            for henchman in squad.henchmanlist:
+                if henchman is self.mainwindow.currentunit:
+                    namelabel.setText(f"<b>{squad.name}<br/>(selected)<b/>")
+                    break
             else:
                 namelabel.setText(f"<b>{squad.name}<b/>")
             squadgrid.addWidget(namelabel, 0, 0, 1, 3)
