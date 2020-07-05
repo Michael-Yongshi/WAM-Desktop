@@ -105,7 +105,6 @@ class WidgetCurrent(QRaisedFrame):
                 for henchman in squad.henchmanlist:
                     if self.mainwindow.currentunit is henchman:
                         currentsquad = squad
-                        currentunit = henchman
                         break
                         break
 
@@ -150,11 +149,26 @@ class WidgetCurrent(QRaisedFrame):
                     lenght = tabs.__len__()
                     if henchman is self.mainwindow.currentunit:
                         tabs.setCurrentIndex(lenght - 1)
-
+                             
+                tabs.currentChanged.connect(self.onclick)
+                
                 currentbox.addWidget(tabs)
-
+                
                 self.setToolTip("This is the currently selected unit")
                 self.setLayout(currentbox)
+
+    def onclick(self, signal):
+
+        for squad in self.mainwindow.wbid.squadlist:
+            for henchman in squad.henchmanlist:
+                if henchman is self.mainwindow.currentunit:
+                    currentsquad = squad
+                    break
+                    break
+
+        self.mainwindow.currentunit = currentsquad.henchmanlist[signal]
+        print(self.mainwindow.currentunit.name)
+        self.mainwindow.initUI()
 
     def set_namebox(self):
         namebox = QGridLayout()
@@ -310,9 +324,11 @@ class WidgetCurrent(QRaisedFrame):
                 elif okPressed and roll1 and currentunit.ishero == False:
                     # get squad
                     for squad in self.mainwindow.wbid.squadlist:
-                        if currentunit is squad.henchmanlist[0]:
-                            currentsquad = squad
-                            break
+                        for henchman in squad.henchmanlist:
+                            if currentunit is henchman:
+                                currentsquad = squad
+                                break
+                                break
 
                     Squadalive = True
                     if roll1 >= 10 and roll1 <= 12:
