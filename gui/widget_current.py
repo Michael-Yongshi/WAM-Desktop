@@ -77,7 +77,7 @@ class WidgetCurrent(QRaisedFrame):
                     'maxlabel': {'row': 2, 'column': 1, 'width': 1, 'height': 1, 'text': f"Maximum: <b>{self.mainwindow.currentunit.maxcount}</b>", 'tooltip': "Maximum", 'connect': "",},
                     'levellabel': {'row': 0, 'column': 2, 'width': 1, 'height': 1, 'text': f"<b>{self.mainwindow.currentunit.get_levelup_notification()}</b>", 'tooltip': "", 'connect': self.create_method_levelup(),},                
                     'eventslabel': {'row': 1, 'column': 2, 'width': 1, 'height': 1, 'text': f"Events", 'tooltip': f"This characters history: <br/>{self.mainwindow.currentunit.get_historystring()}", 'connect': "",},
-                    'removelabel': {'row': 2, 'column': 2, 'width': 1, 'height': 1, 'text': f"<b>Remove</b>", 'tooltip': f"Remove this character", 'connect': self.remove_unit(),},
+                    # 'removelabel': {'row': 2, 'column': 2, 'width': 1, 'height': 1, 'text': f"<b>Remove</b>", 'tooltip': f"Remove this character", 'connect': self.remove_unit(),},
                     }
                 },
                 'skillbox': {'row': 1, 'column': 0, 'width': 1, 'height': 1,
@@ -130,7 +130,7 @@ class WidgetCurrent(QRaisedFrame):
                             'maxlabel': {'row': 2, 'column': 1, 'width': 1, 'height': 1, 'text': f"Maximum: <b>{henchman.maxcount}</b>", 'tooltip': "Maximum", 'connect': "",},
                             'levellabel': {'row': 0, 'column': 2, 'width': 1, 'height': 1, 'text': f"<b>{henchman.get_levelup_notification()}</b>", 'tooltip': "", 'connect': self.create_method_levelup(),},                
                             'eventslabel': {'row': 1, 'column': 2, 'width': 1, 'height': 1, 'text': f"Events", 'tooltip': f"This characters history: <br/>{henchman.get_historystring()}", 'connect': "",},
-                            'removelabel': {'row': 2, 'column': 2, 'width': 1, 'height': 1, 'text': f"<b>Remove</b>", 'tooltip': f"Remove this character", 'connect': self.remove_unit(),},
+                            # 'removelabel': {'row': 2, 'column': 2, 'width': 1, 'height': 1, 'text': f"<b>Remove</b>", 'tooltip': f"Remove this character", 'connect': self.remove_unit(),},
                             }
                         },
                         'skillbox': {'row': 1, 'column': 0, 'width': 1, 'height': 1,
@@ -182,14 +182,16 @@ class WidgetCurrent(QRaisedFrame):
 
         buttonbox = QHBoxLayout()
 
-        buttonnew = QPushButton('Released from service', self)
-        buttonnew.setToolTip(f"Remove unit from this warband. Paid gold is returned completely for base cost ({self.mainwindow.currentunit.price}) and items carried ({self.mainwindow.currentunit.get_item_costs()}).")
+        btnrelease = QPushButton('Released from service', self)
+        btnrelease.setToolTip(f"Remove unit from this warband. Paid gold is returned completely for base cost ({self.mainwindow.currentunit.price}) and items carried ({self.mainwindow.currentunit.get_item_costs()}).")
+        btnrelease.clicked.connect(self.release_unit)
 
-        buttonremove = QPushButton('Perished in battle', self)
-        buttonremove.setToolTip(f"Remove unit from this warband. The unit fell in battle and items are not recovered / refunded.")
+        btnkill = QPushButton('Perished in battle', self)
+        btnkill.setToolTip(f"Remove unit from this warband. The unit fell in battle and items are not recovered / refunded.")
+        btnkill.clicked.connect(self.kill_unit)
 
-        buttonbox.addWidget(buttonnew)
-        buttonbox.addWidget(buttonremove)
+        buttonbox.addWidget(btnrelease)
+        buttonbox.addWidget(btnkill)
 
         buttonwidget = QWidget()
         buttonwidget.setLayout(buttonbox)
@@ -444,18 +446,37 @@ class WidgetCurrent(QRaisedFrame):
 
         return levelup
 
-    def remove_unit(self):
+    def release_unit(self):
         
-        def remove_unit():
-            remove = QMessageBox.question(self, "Remove unit", "Are you sure to remove this unit?", QMessageBox.Yes | QMessageBox.No)
-            if remove == QMessageBox.Yes and self.mainwindow.currentunit.ishero == True:
-                index = self.mainwindow.wbid.herolist.index(self.mainwindow.currentunit)
-                self.mainwindow.wbid.herolist.pop(index)
-                self.mainwindow.initUI()
+        remove = QMessageBox.question(self, "Release unit?", "Are you sure to release this unit?", QMessageBox.Yes | QMessageBox.No)
+        if remove == QMessageBox.Yes:
 
-            # refund money
+            self.remove_unit()
 
-            # remove squad
-            # refund money
+    def kill_unit(self):
 
-        return remove_unit
+        remove = QMessageBox.question(self, "Unit perished", "Are you sure to remove this character from the game?", QMessageBox.Yes | QMessageBox.No)
+        if remove == QMessageBox.Yes:
+
+            self.remove_unit()
+
+    def remove_unit(self):
+
+        if self.mainwindow.currentunit.ishero == True:
+            index = self.mainwindow.wbid.herolist.index(self.mainwindow.currentunit)
+            self.mainwindow.wbid.herolist.pop(index)
+            self.mainwindow.currentunit = Character.create_template()
+
+        elif self.mainwindow.currentunit.ishero == False:
+            # get squad
+            for squad in self.mainwindow.wbid.squadlist:
+                for henchman in squad.henchmanlist:
+                    if self.mainwindow.currentunit is henchman:
+                        index = squad.henchmanlist.index(henchman)
+                        squad.henchmanlist.pop(index)
+                        try:
+                            self.mainwindow.currentunit = squad.henchmanlist[0]
+                        except:
+                            self.mainwindow.currentunit = Character.create_template()
+
+        self.mainwindow.initUI()
