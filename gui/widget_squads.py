@@ -68,7 +68,7 @@ class WidgetSquads(QWidget):
             
             numlabel = QClickLabel()
             numlabel.setText(f"<b># {squad.get_totalhenchman()}<b/>")
-            numlabel.clicked.connect(self.create_method_change_number(squad))
+            # numlabel.clicked.connect(self.create_method_change_number(squad))
             squadgrid.addWidget(numlabel, 0, 5, 1, 1)
 
             namelabel = QLabel()
@@ -124,36 +124,36 @@ class WidgetSquads(QWidget):
 
         return focus_unit
 
-    def create_method_change_number(self, squad):          
-        """This method is used in order to create a new method that holds a reference to a passed attribute,
-        this is used when a widget needs to be clickable but the signal needs to carry information other than the signal itself.
-        This one specifically gets a current item and then creates a window based on the attribute"""
+    # def create_method_change_number(self, squad):          
+    #     """This method is used in order to create a new method that holds a reference to a passed attribute,
+    #     this is used when a widget needs to be clickable but the signal needs to carry information other than the signal itself.
+    #     This one specifically gets a current item and then creates a window based on the attribute"""
 
-        def change_number():
+    #     def change_number():
 
-            currentsize = squad.get_totalhenchman()
-            newsize, okPressed = QInputDialog.getInt(self, 'Squad members', f"Change squad size to:", currentsize, 0, 6, 1)
-            if okPressed:
-                if newsize != 0:
-                    deltasize = newsize - currentsize
+    #         currentsize = squad.get_totalhenchman()
+    #         newsize, okPressed = QInputDialog.getInt(self, 'Squad members', f"Change squad size to:", currentsize, 0, 6, 1)
+    #         if okPressed:
+    #             if newsize != 0:
+    #                 deltasize = newsize - currentsize
 
-                    process_gold = QMessageBox.question(self, "Process gold", "Do you want to process an exchange for gold?", QMessageBox.Yes | QMessageBox.No)
-                    if process_gold == QMessageBox.Yes:
-                        deltagold = deltasize * squad.henchmanlist[0].get_price()
-                        if deltagold < self.mainwindow.wbid.treasury.gold:
-                            squad.change_henchman_count(deltasize)
-                            self.mainwindow.wbid.treasury.gold -= deltagold
-                            self.mainwindow.initUI()
-                        else:
-                            QMessageBox.information(self, 'Lack of funds!', "Can't add new unit, lack of funds", QMessageBox.Ok)
-                    else:
-                        squad.change_henchman_count(deltasize)
-                        self.mainwindow.initUI()
+    #                 process_gold = QMessageBox.question(self, "Process gold", "Do you want to process an exchange for gold?", QMessageBox.Yes | QMessageBox.No)
+    #                 if process_gold == QMessageBox.Yes:
+    #                     deltagold = deltasize * squad.henchmanlist[0].get_price()
+    #                     if deltagold < self.mainwindow.wbid.treasury.gold:
+    #                         squad.change_henchman_count(deltasize)
+    #                         self.mainwindow.wbid.treasury.gold -= deltagold
+    #                         self.mainwindow.initUI()
+    #                     else:
+    #                         QMessageBox.information(self, 'Lack of funds!', "Can't add new unit, lack of funds", QMessageBox.Ok)
+    #                 else:
+    #                     squad.change_henchman_count(deltasize)
+    #                     self.mainwindow.initUI()
                     
-                else:
-                    print("Can't remove the last member, please disband the whole squad")
+    #             else:
+    #                 print("Can't remove the last member, please disband the whole squad")
 
-        return change_number
+    #     return change_number
 
     def create_method_remove(self, squad): 
         """This method is used in order to create a new method that holds a reference to a passed attribute,
