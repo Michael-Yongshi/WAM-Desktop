@@ -63,6 +63,8 @@ class WidgetCurrent(QRaisedFrame):
 
         self.mainwindow = mainwindow
 
+        currentbox = QVBoxLayout()
+
         if self.mainwindow.currentunit.ishero == True:
 
             self.configfile = {
@@ -95,8 +97,13 @@ class WidgetCurrent(QRaisedFrame):
             config = self.configfile['listbox']
             unitbox.addWidget(self.set_listbox(), config['row'], config['column'], config['width'], config['height'])
 
-            self.setToolTip("This is the currently selected unit")
-            self.setLayout(unitbox)
+            unitwidget = QWidget()
+            unitwidget.setLayout(unitbox)
+
+            buttonwidget = self.set_buttonwidget()
+            
+            currentbox.addWidget(unitwidget)
+            currentbox.addWidget(buttonwidget)
 
         elif self.mainwindow.currentunit.ishero == False:
             currentsquad = None
@@ -109,7 +116,6 @@ class WidgetCurrent(QRaisedFrame):
                         break
 
             if currentsquad != None:
-                currentbox = QVBoxLayout()
                 tabs = QTabWidget()
 
                 for henchman in currentsquad.henchmanlist:
@@ -152,10 +158,13 @@ class WidgetCurrent(QRaisedFrame):
                              
                 tabs.currentChanged.connect(self.onclick)
                 
+                buttonwidget = self.set_buttonwidget()
+
                 currentbox.addWidget(tabs)
+                currentbox.addWidget(buttonwidget)
                 
-                self.setToolTip("This is the currently selected unit")
-                self.setLayout(currentbox)
+        self.setToolTip("This is the currently selected unit")
+        self.setLayout(currentbox)
 
     def onclick(self, signal):
 
@@ -167,8 +176,25 @@ class WidgetCurrent(QRaisedFrame):
                     break
 
         self.mainwindow.currentunit = currentsquad.henchmanlist[signal]
-        print(self.mainwindow.currentunit.name)
         self.mainwindow.initUI()
+
+    def set_buttonwidget(self):
+
+        buttonbox = QHBoxLayout()
+
+        buttonnew = QPushButton('Released from service', self)
+        buttonnew.setToolTip(f"Remove unit from this warband. Paid gold is returned completely for base cost ({self.mainwindow.currentunit.price}) and items carried ({self.mainwindow.currentunit.get_item_costs()}).")
+
+        buttonremove = QPushButton('Perished in battle', self)
+        buttonremove.setToolTip(f"Remove unit from this warband. The unit fell in battle and items are not recovered / refunded.")
+
+        buttonbox.addWidget(buttonnew)
+        buttonbox.addWidget(buttonremove)
+
+        buttonwidget = QWidget()
+        buttonwidget.setLayout(buttonbox)
+
+        return buttonwidget
 
     def set_namebox(self):
         namebox = QGridLayout()
