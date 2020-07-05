@@ -474,9 +474,12 @@ class WidgetCurrent(QRaisedFrame):
                     if self.mainwindow.currentunit is henchman:
                         index = squad.henchmanlist.index(henchman)
                         squad.henchmanlist.pop(index)
+
                         try:
                             self.mainwindow.currentunit = squad.henchmanlist[0]
                         except:
+                            index = self.mainwindow.wbid.squadlist.index(squad)
+                            self.mainwindow.wbid.squadlist.pop(index)
                             self.mainwindow.currentunit = Character.create_template()
 
         self.mainwindow.initUI()
