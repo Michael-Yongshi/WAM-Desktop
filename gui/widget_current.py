@@ -195,6 +195,7 @@ class WidgetCurrent(QRaisedFrame):
 
         buttonwidget = QWidget()
         buttonwidget.setLayout(buttonbox)
+        buttonwidget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         return buttonwidget
 
@@ -451,6 +452,7 @@ class WidgetCurrent(QRaisedFrame):
         remove = QMessageBox.question(self, "Release unit?", "Are you sure to release this unit?", QMessageBox.Yes | QMessageBox.No)
         if remove == QMessageBox.Yes:
 
+            self.mainwindow.wbid.treasury.gold += self.mainwindow.currentunit.get_price()
             self.remove_unit()
 
     def kill_unit(self):
