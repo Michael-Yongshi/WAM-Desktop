@@ -190,13 +190,18 @@ class WidgetCurrent(QRaisedFrame):
                 if henchman is self.mainwindow.currentunit:
                     length = squad.henchmanlist.__len__()
                     
-                    if signal == length:
+                    if signal == length and henchman.get_price() < self.mainwindow.wbid.treasury.gold:
                         # if signal is equal to length of henchman than the last tab has been selected to add a new unit
+                        self.mainwindow.wbid.treasury.gold -= henchman.get_price()
                         squad.add_new_henchman()
+
+                    elif signal == length and henchman.get_price() > self.mainwindow.wbid.treasury.gold:
+                        # not enough money to add unit
+                        message = QMessageBox.information(self, f"Not enough funds!", f"Current gold is {self.mainwindow.wbid.treasury.gold}, but {henchman.get_price()} is needed.", QMessageBox.Ok)
+                        break
 
                     # set currentunit to this squads selected henchman based on the onclick signal if a character is selected
                     self.mainwindow.currentunit = squad.henchmanlist[signal]
-                    
                     break
         
         self.mainwindow.initUI()
