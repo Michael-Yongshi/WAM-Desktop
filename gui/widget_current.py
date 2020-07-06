@@ -166,11 +166,13 @@ class WidgetCurrent(QRaisedFrame):
                 unitwidget.setLayout(unitbox)
                 tabs.addTab(unitwidget, f"{henchman.name}", )
 
-                # set to currently selected unit
+                # set default tab to currentunit
                 lenght = tabs.__len__()
                 if henchman is self.mainwindow.currentunit:
                     tabs.setCurrentIndex(lenght - 1)
-                            
+            
+            tabs.addTab(QWidget(), f"+")
+
             tabs.currentChanged.connect(self.onclick)
             
             buttonwidget = self.set_buttonwidget()
@@ -181,15 +183,22 @@ class WidgetCurrent(QRaisedFrame):
             return currentbox
 
     def onclick(self, signal):
-
+        
         for squad in self.mainwindow.wbid.squadlist:
             for henchman in squad.henchmanlist:
+                #just check if currentunit is part of this squad, doesnt matter which specific henchman it is, just which squad it is part of.
                 if henchman is self.mainwindow.currentunit:
-                    currentsquad = squad
-                    break
-                    break
+                    length = squad.henchmanlist.__len__()
+                    
+                    if signal == length:
+                        # if signal is equal to length of henchman than the last tab has been selected to add a new unit
+                        squad.add_new_henchman()
 
-        self.mainwindow.currentunit = currentsquad.henchmanlist[signal]
+                    # set currentunit to this squads selected henchman based on the onclick signal if a character is selected
+                    self.mainwindow.currentunit = squad.henchmanlist[signal]
+                    
+                    break
+        
         self.mainwindow.initUI()
 
     def set_buttonwidget(self):
