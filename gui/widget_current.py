@@ -27,6 +27,8 @@ from PyQt5.QtGui import (
     QIcon,
     )
 
+from lib.py_library_nfc.source.class_nfc import NFCconnection
+
 from lib.wam_core.source.methods_engine import (
     save_warband,
     load_warband,
@@ -218,14 +220,83 @@ class WidgetCurrent(QRaisedFrame):
         btnkill.setToolTip(f"Remove unit from this warband. The unit fell in battle and items are not recovered / refunded.")
         btnkill.clicked.connect(self.kill_unit)
 
+        btnnfc = QPushButton('Link to NFC', self)
+        btnnfc.setToolTip(f"Link character to a physical model (that has nfc capability)")
+        btnnfc.clicked.connect(self.set_nfc_link)
+
+        btnnfc_demo = QPushButton('check NFC', self)
+        btnnfc_demo.clicked.connect(self.get_nfc_link)
+
         buttonbox.addWidget(btnrelease)
         buttonbox.addWidget(btnkill)
+        buttonbox.addWidget(btnnfc)
+        buttonbox.addWidget(btnnfc_demo)
 
         buttonwidget = QWidget()
         buttonwidget.setLayout(buttonbox)
         buttonwidget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         return buttonwidget
+
+    def set_nfc_link(self):
+
+        try:
+            unique_id = os.urandom(16)
+
+            # connect to card
+            nfcconnect = NFCconnection.initialize()
+
+            # make sure the card is clean
+            nfcconnect.wipe_card()
+
+            # write to nfc tag
+            nfcconnect.write_card(unique_id)
+
+            # write to current unit
+            self.mainwindow.currentunit.unique_id = unique_id
+            print(f"set nfc link to {self.mainwindow.currentunit.unique_id}")
+
+            self.mainwindow.initUI()
+
+        except:
+            print(f"Failed to connect to nfc card")
+            return
+
+    def get_nfc_link(self):
+        
+        try:
+            #connect to card
+            nfcconnect = NFCconnection.initialize()
+
+            # read tag
+            unique_id = nfcconnect.read_card()
+
+        except:
+            print(f"Failed to connect to nfc card")
+            return
+
+        idfound = False
+        # check if id matches a hero
+        for hero in self.mainwindow.wbid.herolist:
+
+            if hero.unique_id == unique_id:
+                self.mainwindow.currentunit = hero
+                self.mainwindow.initUI()
+                idfound = True
+                break
+        
+        # If it didnt match any hero, check the squads
+        if idfound == False:
+            for squad in self.mainwindow.wbid.squadlist:
+                    for henchman in squad:
+                        if henchman.unique_id == unique_id:
+                            self.mainwindow.currentunit = henchman
+                            self.mainwindow.initUI()
+                            idfound = True
+                            break
+
+        if idfound == False:
+            print(f"character {unique_id} not found")
 
     def set_namebox(self):
         namebox = QGridLayout()
