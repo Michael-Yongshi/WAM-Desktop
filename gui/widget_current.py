@@ -259,7 +259,7 @@ class WidgetCurrent(QRaisedFrame):
             self.mainwindow.initUI()
 
         except:
-            print(f"Failed to connect to nfc card")
+            message = QMessageBox.information(self, f"Failed to connect to NFC!", f"Please try again and hold the NFC tag near the NFC reader (< 10 cm)!", QMessageBox.Ok)
             return
 
     def get_nfc_link(self):
@@ -292,10 +292,10 @@ class WidgetCurrent(QRaisedFrame):
                                 break
 
             if idfound == False:
-                print(f"character {unique_id} not found")
+                message = QMessageBox.information(self, f"Character not found!", f"Character with {unique_id} not found!", QMessageBox.Ok)
 
         except:
-            print(f"Failed to connect to nfc card")
+            message = QMessageBox.information(self, f"Failed to connect to NFC!", f"Please try again and hold the NFC tag near the NFC reader (< 10 cm)!", QMessageBox.Ok)
             return
 
     def set_namebox(self):
