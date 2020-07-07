@@ -6,6 +6,9 @@ The desktop frontend for the WAM application, used for Linux, Windows and MacOS.
 Uses WAM-Core as a submodule
 https://github.com/Michael-Yongshi/WAM-Core.git
 
+Uses Py-library-nfc as a submodule
+https://github.com/Michael-Yongshi/Py-Library-NFC
+
 #### Notice
 For Missile and Blackpowder weapons an additional strength modifier is created named 'Impact', in order to seperate the strength skill of melee and ranged attacks.
 
