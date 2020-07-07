@@ -15,6 +15,7 @@ For Missile and Blackpowder weapons an additional strength modifier is created n
 ## Release Notes
 ### Release 1.10
 Win10-64: https://www.jottacloud.com/s/130542021d8feef4f458ee5a2d6bf74862a
+
 Ubuntu18-64: https://www.jottacloud.com/s/1305442054280194dfaa20c392243302191
 
 Individual Henchman release 1.10 (beta) - 2020-07-07
@@ -29,6 +30,7 @@ Individual Henchman release 1.10 (beta) - 2020-07-07
 
 ### Release 1.00
 Win10-64: https://www.jottacloud.com/s/130dc76091c06c94f73a7b79378122252f5
+
 Ubuntu18-64: https://www.jottacloud.com/s/13099be5dc95aae4139a0ca0328c19b71cf
 
 Hotfix for release 1.00 - 2020-06-14
