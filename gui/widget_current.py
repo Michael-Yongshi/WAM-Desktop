@@ -1,3 +1,4 @@
+import os
 
 from PyQt5.QtCore import (
     Qt,
@@ -240,27 +241,26 @@ class WidgetCurrent(QRaisedFrame):
 
     def set_nfc_link(self):
 
-        try:
-            unique_id = os.urandom(16)
+        unique_id = os.urandom(16)
 
-            # connect to card
-            nfcconnect = NFCconnection.initialize()
+        # connect to card
+        nfcconnect = NFCconnection.initialize()
 
-            # make sure the card is clean
-            nfcconnect.wipe_card()
+        # make sure the card is clean
+        nfcconnect.wipe_card()
 
-            # write to nfc tag
-            nfcconnect.write_card(unique_id)
+        # write to nfc tag
+        nfcconnect.write_card(unique_id)
 
-            # write to current unit
-            self.mainwindow.currentunit.unique_id = unique_id
-            print(f"set nfc link to {self.mainwindow.currentunit.unique_id}")
+        # write to current unit
+        self.mainwindow.currentunit.unique_id = unique_id
+        print(f"set nfc link to {self.mainwindow.currentunit.unique_id}")
 
-            self.mainwindow.initUI()
+        self.mainwindow.initUI()
 
-        except:
-            print(f"Failed to connect to nfc card")
-            return
+        # except:
+        #     print(f"Failed to connect to nfc card")
+        #     return
 
     def get_nfc_link(self):
         
@@ -288,7 +288,7 @@ class WidgetCurrent(QRaisedFrame):
         # If it didnt match any hero, check the squads
         if idfound == False:
             for squad in self.mainwindow.wbid.squadlist:
-                    for henchman in squad:
+                    for henchman in squad.henchmanlist:
                         if henchman.unique_id == unique_id:
                             self.mainwindow.currentunit = henchman
                             self.mainwindow.initUI()
