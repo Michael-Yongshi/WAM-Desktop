@@ -1,3 +1,4 @@
+import os
 
 from PyQt5.QtCore import (
     Qt,
@@ -16,6 +17,7 @@ from PyQt5.QtWidgets import (
     QProgressBar,
     QPushButton, 
     QSizePolicy,
+    QTabWidget,
     QVBoxLayout,
     QWidget, 
     )
@@ -25,6 +27,8 @@ from PyQt5.QtGui import (
     QFontDatabase,
     QIcon,
     )
+
+from lib.py_library_nfc.source.class_nfc import NFCconnection
 
 from lib.wam_core.source.methods_engine import (
     save_warband,
@@ -49,7 +53,7 @@ from lib.wam_core.source.class_hierarchy import (
     Event,
     )
 
-from gui.widget_template import *
+from guidarktheme.widget_template import *
 from gui.widget_items import WidgetItemsUnit
 from gui.widget_abilitymagic import WidgetAbility, WidgetMagic
 
@@ -62,9 +66,24 @@ class WidgetCurrent(QRaisedFrame):
 
         self.mainwindow = mainwindow
 
+        if self.mainwindow.currentunit.ishero == True:
+            currentbox = self.set_hero_box()
+
+        elif self.mainwindow.currentunit.ishero == False:
+            currentbox = self.set_henchman_box()
+
+        else:
+            currentbox = QVBoxLayout()
+
+        self.setToolTip("This is the currently selected unit")
+        self.setLayout(currentbox)
+
+    def set_hero_box(self):
+        currentbox = QVBoxLayout()
+
         self.configfile = {
             'namebox': {'row': 0, 'column': 0, 'width': 1, 'height': 1, 'children': {
-                'namelabel': {'row': 0, 'column': 0, 'width': 1, 'height': 1, 'text': f"Name: <b>{self.mainwindow.currentunit.name}</b>", 'tooltip': "Name", 'connect': self.create_method_change_name(self.mainwindow.currentunit.name),},
+                'namelabel': {'row': 0, 'column': 0, 'width': 1, 'height': 1, 'text': f"Name: <b>{self.mainwindow.currentunit.name}</b>", 'tooltip': "Name", 'connect': self.create_method_change_name(self.mainwindow.currentunit),},
                 'catlabel': {'row': 1, 'column': 0, 'width': 1, 'height': 1, 'text': f"Category: <b>{self.mainwindow.currentunit.category}</b>", 'tooltip': "Category", 'connect': "",},
                 'pricelabel': {'row': 2, 'column': 0, 'width': 1, 'height': 1, 'text': f"Price: <b>{self.mainwindow.currentunit.price}</b>", 'tooltip': "Price", 'connect': "",},
                 'advlabel': {'row': 0, 'column': 1, 'width': 1, 'height': 1, 'text': f"Advance: <b>{self.mainwindow.currentunit.get_current_advance()}</b>", 'tooltip': f"Next is Advance <b>{self.mainwindow.currentunit.get_next_advance()}</b> at experience <b> {self.mainwindow.currentunit.get_xpneeded()} </b>", 'connect': "",},
@@ -72,7 +91,7 @@ class WidgetCurrent(QRaisedFrame):
                 'maxlabel': {'row': 2, 'column': 1, 'width': 1, 'height': 1, 'text': f"Maximum: <b>{self.mainwindow.currentunit.maxcount}</b>", 'tooltip': "Maximum", 'connect': "",},
                 'levellabel': {'row': 0, 'column': 2, 'width': 1, 'height': 1, 'text': f"<b>{self.mainwindow.currentunit.get_levelup_notification()}</b>", 'tooltip': "", 'connect': self.create_method_levelup(),},                
                 'eventslabel': {'row': 1, 'column': 2, 'width': 1, 'height': 1, 'text': f"Events", 'tooltip': f"This characters history: <br/>{self.mainwindow.currentunit.get_historystring()}", 'connect': "",},
-                'removelabel': {'row': 2, 'column': 2, 'width': 1, 'height': 1, 'text': f"<b>Remove</b>", 'tooltip': f"Remove this character", 'connect': self.remove_unit(),},
+                # 'removelabel': {'row': 2, 'column': 2, 'width': 1, 'height': 1, 'text': f"<b>Remove</b>", 'tooltip': f"Remove this character", 'connect': self.remove_unit(),},
                 }
             },
             'skillbox': {'row': 1, 'column': 0, 'width': 1, 'height': 1,
@@ -81,20 +100,203 @@ class WidgetCurrent(QRaisedFrame):
             },
         }
 
-        if self.mainwindow.currentunit.ishero != "":
-            currentbox = QGridLayout()
+        unitbox = QGridLayout()
 
-            config = self.configfile['namebox']
-            currentbox.addWidget(self.set_namebox(), config['row'], config['column'], config['width'], config['height'])
+        config = self.configfile['namebox']
+        unitbox.addWidget(self.set_namebox(), config['row'], config['column'], config['width'], config['height'])
 
-            config = self.configfile['skillbox']
-            currentbox.addWidget(self.set_skillbox(), config['row'], config['column'], config['width'], config['height'])
+        config = self.configfile['skillbox']
+        unitbox.addWidget(self.set_skillbox(), config['row'], config['column'], config['width'], config['height'])
 
-            config = self.configfile['listbox']
-            currentbox.addWidget(self.set_listbox(), config['row'], config['column'], config['width'], config['height'])
+        config = self.configfile['listbox']
+        unitbox.addWidget(self.set_listbox(), config['row'], config['column'], config['width'], config['height'])
 
-            self.setToolTip("This is the currently selected unit")
-            self.setLayout(currentbox)
+        unitwidget = QWidget()
+        unitwidget.setLayout(unitbox)
+
+        buttonwidget = self.set_buttonwidget()
+        
+        currentbox.addWidget(unitwidget)
+        currentbox.addWidget(buttonwidget)
+
+        return currentbox
+
+    def set_henchman_box(self):
+
+        currentbox = QVBoxLayout()
+        currentsquad = None
+
+        for squad in self.mainwindow.wbid.squadlist:
+            for henchman in squad.henchmanlist:
+                if self.mainwindow.currentunit is henchman:
+                    currentsquad = squad
+                    break
+                    break
+
+        if currentsquad != None:
+            tabs = QTabWidget()
+
+            for henchman in currentsquad.henchmanlist:
+
+                self.configfile = {
+                    'namebox': {'row': 0, 'column': 0, 'width': 1, 'height': 1, 'children': {
+                        'namelabel': {'row': 0, 'column': 0, 'width': 1, 'height': 1, 'text': f"Name: <b>{henchman.name}</b>", 'tooltip': "Name", 'connect': self.create_method_change_name(henchman),},
+                        'catlabel': {'row': 1, 'column': 0, 'width': 1, 'height': 1, 'text': f"Category: <b>{henchman.category}</b>", 'tooltip': "Category", 'connect': "",},
+                        'pricelabel': {'row': 2, 'column': 0, 'width': 1, 'height': 1, 'text': f"Price: <b>{henchman.price}</b>", 'tooltip': "Price", 'connect': "",},
+                        'advlabel': {'row': 0, 'column': 1, 'width': 1, 'height': 1, 'text': f"Advance: <b>{henchman.get_current_advance()}</b>", 'tooltip': f"Next is Advance <b>{henchman.get_next_advance()}</b> at experience <b> {henchman.get_xpneeded()} </b>", 'connect': "",},
+                        'explabel': {'row': 1, 'column': 1, 'width': 1, 'height': 1, 'text': f"Experience: <b>{henchman.experience}</b>", 'tooltip': f"This characters current experience", 'connect': self.create_method_change_experience(),},
+                        'maxlabel': {'row': 2, 'column': 1, 'width': 1, 'height': 1, 'text': f"Maximum: <b>{henchman.maxcount}</b>", 'tooltip': "Maximum", 'connect': "",},
+                        'levellabel': {'row': 0, 'column': 2, 'width': 1, 'height': 1, 'text': f"<b>{henchman.get_levelup_notification()}</b>", 'tooltip': "", 'connect': self.create_method_levelup(),},                
+                        'eventslabel': {'row': 1, 'column': 2, 'width': 1, 'height': 1, 'text': f"Events", 'tooltip': f"This characters history: <br/>{henchman.get_historystring()}", 'connect': "",},
+                        # 'removelabel': {'row': 2, 'column': 2, 'width': 1, 'height': 1, 'text': f"<b>Remove</b>", 'tooltip': f"Remove this character", 'connect': self.remove_unit(),},
+                        }
+                    },
+                    'skillbox': {'row': 1, 'column': 0, 'width': 1, 'height': 1,
+                    },
+                    'listbox': {'row': 2, 'column': 0, 'width': 4, 'height': 1,
+                    },
+                }
+
+                unitbox = QGridLayout()
+                config = self.configfile['namebox']
+                unitbox.addWidget(self.set_namebox(), config['row'], config['column'], config['width'], config['height'])
+                config = self.configfile['skillbox']
+                unitbox.addWidget(self.set_skillbox(), config['row'], config['column'], config['width'], config['height'])
+                config = self.configfile['listbox']
+                unitbox.addWidget(self.set_listbox(), config['row'], config['column'], config['width'], config['height'])
+
+                unitwidget = QWidget()
+                unitwidget.setLayout(unitbox)
+                tabs.addTab(unitwidget, f"{henchman.name}", )
+
+                # set default tab to currentunit
+                lenght = tabs.__len__()
+                if henchman is self.mainwindow.currentunit:
+                    tabs.setCurrentIndex(lenght - 1)
+            
+            tabs.addTab(QWidget(), f"+")
+
+            tabs.currentChanged.connect(self.onclick)
+            
+            buttonwidget = self.set_buttonwidget()
+
+            currentbox.addWidget(tabs)
+            currentbox.addWidget(buttonwidget)
+                
+            return currentbox
+
+    def onclick(self, signal):
+        
+        for squad in self.mainwindow.wbid.squadlist:
+            for henchman in squad.henchmanlist:
+                #just check if currentunit is part of this squad, doesnt matter which specific henchman it is, just which squad it is part of.
+                if henchman is self.mainwindow.currentunit:
+                    length = squad.henchmanlist.__len__()
+                    
+                    if signal == length and henchman.get_price() < self.mainwindow.wbid.treasury.gold:
+                        # if signal is equal to length of henchman than the last tab has been selected to add a new unit
+                        self.mainwindow.wbid.treasury.gold -= henchman.get_price()
+                        squad.add_new_henchman()
+
+                    elif signal == length and henchman.get_price() > self.mainwindow.wbid.treasury.gold:
+                        # not enough money to add unit
+                        message = QMessageBox.information(self, f"Not enough funds!", f"Current gold is {self.mainwindow.wbid.treasury.gold}, but {henchman.get_price()} is needed.", QMessageBox.Ok)
+                        break
+
+                    # set currentunit to this squads selected henchman based on the onclick signal if a character is selected
+                    self.mainwindow.currentunit = squad.henchmanlist[signal]
+                    break
+        
+        self.mainwindow.initUI()
+
+    def set_buttonwidget(self):
+
+        buttonbox = QHBoxLayout()
+
+        btnrelease = QPushButton('Released from service', self)
+        btnrelease.setToolTip(f"Remove unit from this warband. Paid gold is returned completely for base cost ({self.mainwindow.currentunit.price}) and items carried ({self.mainwindow.currentunit.get_item_costs()}).")
+        btnrelease.clicked.connect(self.release_unit)
+
+        btnkill = QPushButton('Perished in battle', self)
+        btnkill.setToolTip(f"Remove unit from this warband. The unit fell in battle and items are not recovered / refunded.")
+        btnkill.clicked.connect(self.kill_unit)
+
+        btnnfc = QPushButton('Link to NFC (BETA)', self)
+        btnnfc.setToolTip(f"Link character to a physical model (that has nfc capability)")
+        btnnfc.clicked.connect(self.set_nfc_link)
+
+        btnnfc_demo = QPushButton('check NFC (BETA)', self)
+        btnnfc_demo.clicked.connect(self.get_nfc_link)
+
+        buttonbox.addWidget(btnrelease)
+        buttonbox.addWidget(btnkill)
+        buttonbox.addWidget(btnnfc)
+        buttonbox.addWidget(btnnfc_demo)
+
+        buttonwidget = QWidget()
+        buttonwidget.setLayout(buttonbox)
+        buttonwidget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+
+        return buttonwidget
+
+    def set_nfc_link(self):
+
+        try:
+            unique_id = os.urandom(16)
+
+            # connect to card
+            nfcconnect = NFCconnection.initialize()
+
+            # make sure the card is clean
+            nfcconnect.wipe_card()
+
+            # write to nfc tag
+            nfcconnect.write_card(unique_id)
+
+            # write to current unit
+            self.mainwindow.currentunit.unique_id = unique_id
+            message = QMessageBox.information(self, f"NFC written", f"Character ID ({self.mainwindow.currentunit.unique_id} for character {self.mainwindow.currentunit.name} written succesfully to NFC.", QMessageBox.Ok)
+            self.mainwindow.initUI()
+
+        except:
+            print(f"Failed to connect to nfc card")
+            return
+
+    def get_nfc_link(self):
+        
+        try:
+            #connect to card
+            nfcconnect = NFCconnection.initialize()
+
+            # read tag
+            unique_id = nfcconnect.read_card()
+
+            idfound = False
+            # check if id matches a hero
+            for hero in self.mainwindow.wbid.herolist:
+
+                if hero.unique_id == unique_id:
+                    self.mainwindow.currentunit = hero
+                    self.mainwindow.initUI()
+                    idfound = True
+                    break
+            
+            # If it didnt match any hero, check the squads
+            if idfound == False:
+                for squad in self.mainwindow.wbid.squadlist:
+                        for henchman in squad.henchmanlist:
+                            if henchman.unique_id == unique_id:
+                                self.mainwindow.currentunit = henchman
+                                self.mainwindow.initUI()
+                                idfound = True
+                                break
+
+            if idfound == False:
+                print(f"character {unique_id} not found")
+
+        except:
+            print(f"Failed to connect to nfc card")
+            return
 
     def set_namebox(self):
         namebox = QGridLayout()
@@ -168,12 +370,13 @@ class WidgetCurrent(QRaisedFrame):
         
         return listframe
 
-    def create_method_change_name(self, name):
+    def create_method_change_name(self, unit):
         
         def change_name():
             new_name, okPressed = QInputDialog.getText(self, "Choose a name", "Name your unit:", text="default")
             if okPressed and new_name:
-                self.mainwindow.currentunit.name = new_name
+                unit.name = new_name
+                self.mainwindow.currentunit = unit
                 self.mainwindow.initUI()
         
         return change_name
@@ -249,9 +452,11 @@ class WidgetCurrent(QRaisedFrame):
                 elif okPressed and roll1 and currentunit.ishero == False:
                     # get squad
                     for squad in self.mainwindow.wbid.squadlist:
-                        if currentunit is squad.henchmanlist[0]:
-                            currentsquad = squad
-                            break
+                        for henchman in squad.henchmanlist:
+                            if currentunit is henchman:
+                                currentsquad = squad
+                                break
+                                break
 
                     Squadalive = True
                     if roll1 >= 10 and roll1 <= 12:
@@ -341,18 +546,41 @@ class WidgetCurrent(QRaisedFrame):
 
         return levelup
 
-    def remove_unit(self):
+    def release_unit(self):
         
-        def remove_unit():
-            remove = QMessageBox.question(self, "Remove unit", "Are you sure to remove this unit?", QMessageBox.Yes | QMessageBox.No)
-            if remove == QMessageBox.Yes and self.mainwindow.currentunit.ishero == True:
-                index = self.mainwindow.wbid.herolist.index(self.mainwindow.currentunit)
-                self.mainwindow.wbid.herolist.pop(index)
-                self.mainwindow.initUI()
+        remove = QMessageBox.question(self, "Release unit?", "Are you sure to release this unit?", QMessageBox.Yes | QMessageBox.No)
+        if remove == QMessageBox.Yes:
 
-            # refund money
+            self.mainwindow.wbid.treasury.gold += self.mainwindow.currentunit.get_price()
+            self.remove_unit()
 
-            # remove squad
-            # refund money
+    def kill_unit(self):
 
-        return remove_unit
+        remove = QMessageBox.question(self, "Unit perished", "Are you sure to remove this character from the game?", QMessageBox.Yes | QMessageBox.No)
+        if remove == QMessageBox.Yes:
+
+            self.remove_unit()
+
+    def remove_unit(self):
+
+        if self.mainwindow.currentunit.ishero == True:
+            index = self.mainwindow.wbid.herolist.index(self.mainwindow.currentunit)
+            self.mainwindow.wbid.herolist.pop(index)
+            self.mainwindow.currentunit = Character.create_template()
+
+        elif self.mainwindow.currentunit.ishero == False:
+            # get squad
+            for squad in self.mainwindow.wbid.squadlist:
+                for henchman in squad.henchmanlist:
+                    if self.mainwindow.currentunit is henchman:
+                        index = squad.henchmanlist.index(henchman)
+                        squad.henchmanlist.pop(index)
+
+                        try:
+                            self.mainwindow.currentunit = squad.henchmanlist[0]
+                        except:
+                            index = self.mainwindow.wbid.squadlist.index(squad)
+                            self.mainwindow.wbid.squadlist.pop(index)
+                            self.mainwindow.currentunit = Character.create_template()
+
+        self.mainwindow.initUI()

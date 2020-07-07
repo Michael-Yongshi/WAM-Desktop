@@ -48,7 +48,7 @@ from lib.wam_core.source.class_hierarchy import (
     Magic,
     )
 
-from gui.widget_template import *
+from guidarktheme.widget_template import *
 from gui.widget_abilitymagic import WidgetAbility
 
 class WidgetItemsWarband(QBorderlessFrame):
@@ -161,9 +161,10 @@ class WidgetItemsUnit(QBorderlessFrame):
 
                 elif unit.ishero == False:
                     for squad in self.mainwindow.wbid.squadlist:
-                        if unit is squad.henchmanlist[0]:
-                            message = squad.buy_item(self.mainwindow.wbid, new_item)
-                            break
+                        for henchman in squad.henchmanlist:
+                            if unit is henchman:
+                                message = squad.buy_item(self.mainwindow.wbid, new_item)
+                                break
                 
                 if message == "Lack of funds!":
                     message = QMessageBox.information(self, 'Lack of funds!', "Can't add new item, lack of funds", QMessageBox.Ok)

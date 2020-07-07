@@ -49,7 +49,7 @@ from lib.wam_core.source.class_hierarchy import (
     Magic,
     )
 
-from gui.widget_template import *
+from guidarktheme.widget_template import *
 
 
 class WidgetSystem(QBorderedWidget):
