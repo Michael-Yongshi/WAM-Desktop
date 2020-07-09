@@ -48,12 +48,30 @@ Hotfix for release 1.00 - 2020-06-13
 
 ## Development
 
-### GUI requisites
+### PyQt5
+GUI package
 
 ```
 pip3 install --user pyqt5
-apt-get install python3 pyqt5           # (prod) if pip3 doesn't work
-sudo apt-get install python3-pyqt5      # ubuntu
+sudo apt-get install python3 pyqt5           # (prod) if pip3 doesn't work
+```
+
+### yongshi-guidarktheme
+Dark Theme settings package
+```
+pip3 install --user yongshi-guidarktheme
+```
+
+### Pyscard
+NFC reader package
+```
+pip3 install --user pyscard
+```
+
+### NDEF
+NFC interpretation package
+```
+pip3 install --user ndef
 ```
 
 ## Running the tests
@@ -62,24 +80,21 @@ sudo apt-get install python3-pyqt5      # ubuntu
 ### Break down into end to end tests
 
 
-
 ### And coding style tests
-
 
 
 ## Deployment
 
-### PyInstaller (deploy cross platform desktop gui)
+
+## Built With PyInstaller 
+(deploy cross platform desktop gui)
+
+### install
 ```
 pip3 install --user pyinstaller         # (dev) to create an installer for desktop OS like windows, ubuntu, ios
 ```
 
-sometimes you need to run this for path to find pip package:
-```
-export PYTHONPATH="${PYTHONPATH}:/usr/local/lib/python3.6/site-packages:/usr/lib/python3.6/site-packages"
-```
-
-### create a distribution manually: 
+### Create distribution
 Windows 10 (64bit)
 ```
 python -m PyInstaller cli.py --add-data "lib/wam_core/database/references/*.json";"lib/wam_core/database/references/" --icon="gui\warhammer_icon.ico" --name WAM-Win10-64
@@ -90,15 +105,11 @@ Ubuntu 18 (64bit)
 pyinstaller cli.py --add-data "lib/wam_core/database/references/*.json":"lib/wam_core/database/references/" --icon="gui\warhammer_icon.ico" --name WAM-Ubuntu18-64
 ```
 
-
-### create a distribution from spec with 
+### create a distribution from spec file with 
 ```
 python -m PyInstaller WAM.spec
 ```
 <!-- python -m PyInstaller WAM_OF.spec -->
-
-## Built With
-
 
 
 ## Contributing
@@ -111,7 +122,7 @@ python -m PyInstaller WAM.spec
 
 ## Authors
 
-* **Michael-Yongshi** 
+**Michael-Yongshi** 
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
