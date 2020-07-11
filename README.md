@@ -102,7 +102,7 @@ python -m PyInstaller cli.py --add-data "lib/wam_core/database/references/*.json
 
 Ubuntu 18 (64bit)
 ```
-pyinstaller cli.py --add-data "lib/wam_core/database/references/*.json":"lib/wam_core/database/references/" --icon="gui\warhammer_icon.ico" --name WAM-Ubuntu18-64
+pyinstaller cli.py --add-data "lib/wam_core/database/references/*.json":"lib/wam_core/database/references/" --name WAM-Ubuntu18-64
 ```
 
 ### create a distribution from spec file with 
