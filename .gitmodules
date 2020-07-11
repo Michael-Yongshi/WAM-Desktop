@@ -1,6 +1,6 @@
 [submodule "wam_core"]
 	path = lib/wam_core
-	url = https://github.com/Michael-Yongshi/WAM-Core.git
+	url = git@github.com/Michael-Yongshi/WAM-Core.git
 [submodule "py_library_nfc"]
 	path = lib/py_library_nfc
 	url = git@github:Michael-Yongshi/Py-Library-NFC.git
