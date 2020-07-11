@@ -57,7 +57,7 @@ sudo apt-get install python3 pyqt5           # (prod) if pip3 doesn't work
 ```
 
 ### yongshi-guidarktheme
-Dark Theme settings package
+Dark Theme settings package (>= v1.0)
 ```
 pip3 install --user yongshi-guidarktheme
 ```
