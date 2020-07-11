@@ -95,14 +95,20 @@ pip3 install --user pyinstaller         # (dev) to create an installer for deskt
 ```
 
 ### Create distribution
-Windows 10 (64bit)
+#### Windows 10 (64bit)
+directory
 ```
-python -m PyInstaller cli.py --add-data "lib/wam_core/database/references/*.json";"lib/wam_core/database/references/" --icon="gui\warhammer_icon.ico" --name WAM-Win10-64
+python -m PyInstaller cli.py --add-data "lib/wam_core/database/references/*.json";"lib/wam_core/database/references/" --icon="gui\warhammer_icon.ico" --name WAM-Win10-64-major-minor-patch-ext
 ```
 
-Ubuntu 18 (64bit)
+#### Ubuntu 18 (64bit)
+appimage
 ```
-pyinstaller cli.py --add-data "lib/wam_core/database/references/*.json":"lib/wam_core/database/references/" --name WAM-Ubuntu18-64
+pyinstaller cli.py --add-data "lib/wam_core/database/references/*.json":"lib/wam_core/database/references/" --name WAM-Ubuntu18-64-major-minor-patch-ext
+```
+directory
+```
+pyinstaller cli.py --add-data "lib/wam_core/database/references/*.json":"lib/wam_core/database/references/" --name WAM-Ubuntu18-64-major-minor-patch-ext
 ```
 
 ### create a distribution from spec file with 
