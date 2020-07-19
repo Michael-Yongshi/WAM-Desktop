@@ -120,6 +120,9 @@ class WidgetSystem(QBorderedWidget):
             
             # get all races in references
             datadict = load_reference("warbands")
+            if datadict == None:
+                QMessageBox(self, f"Error", f"Could not load database files")
+                return
 
             races = []
             for key in datadict:

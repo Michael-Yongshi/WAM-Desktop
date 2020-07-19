@@ -28,6 +28,10 @@ Individual Henchman release 1.10 (beta) - 2020-07-07
 - Added button for linking character to a NFC tag using a unique id
 - Added button for reading NFC and find character (will be changed to automatic later)
 
+SEE PY-LIBRARY-NFC FOR UBUNTU NFC FIXES:
+https://github.com/Michael-Yongshi/Py-Library-NFC/tree/fix_ubuntu
+
+
 ### Release 1.00
 Win10-64: https://www.jottacloud.com/s/130dc76091c06c94f73a7b79378122252f5
 
@@ -48,12 +52,30 @@ Hotfix for release 1.00 - 2020-06-13
 
 ## Development
 
-### GUI requisites
+### PyQt5
+GUI package
 
 ```
 pip3 install --user pyqt5
-apt-get install python3 pyqt5           # (prod) if pip3 doesn't work
-sudo apt-get install python3-pyqt5      # ubuntu
+sudo apt-get install python3 pyqt5           # (prod) if pip3 doesn't work
+```
+
+### yongshi-guidarktheme
+Dark Theme settings package (>= v1.0)
+```
+pip3 install --user yongshi-guidarktheme
+```
+
+### Pyscard
+NFC reader package
+```
+pip3 install --user pyscard
+```
+
+### NDEF
+NFC interpretation package
+```
+pip3 install --user ndef
 ```
 
 ## Running the tests
@@ -62,43 +84,42 @@ sudo apt-get install python3-pyqt5      # ubuntu
 ### Break down into end to end tests
 
 
-
 ### And coding style tests
-
 
 
 ## Deployment
 
-### PyInstaller (deploy cross platform desktop gui)
+
+## Built With PyInstaller 
+(deploy cross platform desktop gui)
+
+### install
 ```
 pip3 install --user pyinstaller         # (dev) to create an installer for desktop OS like windows, ubuntu, ios
 ```
 
-sometimes you need to run this for path to find pip package:
+### Create distribution
+#### Windows 10 (64bit)
+directory
 ```
-export PYTHONPATH="${PYTHONPATH}:/usr/local/lib/python3.6/site-packages:/usr/lib/python3.6/site-packages"
-```
-
-### create a distribution manually: 
-Windows 10 (64bit)
-```
-python -m PyInstaller cli.py --add-data "lib/wam_core/database/references/*.json";"lib/wam_core/database/references/" --icon="gui\warhammer_icon.ico" --name WAM-Win10-64
+python -m PyInstaller cli.py --add-data "lib/wam_core/database/references/*.json";"lib/wam_core/database/references/" --icon="gui\warhammer_icon.ico" --name WAM-Win10-64-major-minor-patch-ext
 ```
 
-Ubuntu 18 (64bit)
+#### Ubuntu 18 (64bit)
+appimage
 ```
-pyinstaller cli.py --add-data "lib/wam_core/database/references/*.json":"lib/wam_core/database/references/" --icon="gui\warhammer_icon.ico" --name WAM-Ubuntu18-64
+pyinstaller -F cli.py --add-data "lib/wam_core/database/references/*.json":"lib/wam_core/database/references/" --name WAM-Ubuntu18-64-major-minor-patch-ext
+```
+directory
+```
+pyinstaller cli.py --add-data "lib/wam_core/database/references/*.json":"lib/wam_core/database/references/" --name WAM-Ubuntu18-64-major-minor-patch-ext
 ```
 
-
-### create a distribution from spec with 
+### create a distribution from spec file with 
 ```
 python -m PyInstaller WAM.spec
 ```
 <!-- python -m PyInstaller WAM_OF.spec -->
-
-## Built With
-
 
 
 ## Contributing
@@ -111,7 +132,7 @@ python -m PyInstaller WAM.spec
 
 ## Authors
 
-* **Michael-Yongshi** 
+**Michael-Yongshi** 
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
