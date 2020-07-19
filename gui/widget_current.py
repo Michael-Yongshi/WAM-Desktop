@@ -1,4 +1,5 @@
 import os
+import sys
 
 from PyQt5.QtCore import (
     Qt,
@@ -241,26 +242,29 @@ class WidgetCurrent(QRaisedFrame):
 
     def set_nfc_link(self):
 
-        try:
-            unique_id = os.urandom(16)
+        # try:
+        nfcdata = os.urandom(8)
+        print(nfcdata)
+        unique_id = int(nfcdata.hex(), 16)
+        print(unique_id)
+        
+        # connect to card
+        nfcconnect = NFCconnection.initialize()
 
-            # connect to card
-            nfcconnect = NFCconnection.initialize()
+        # make sure the card is clean
+        nfcconnect.wipe_card()
 
-            # make sure the card is clean
-            nfcconnect.wipe_card()
+        # write to nfc tag
+        nfcconnect.write_card(nfcdata)
 
-            # write to nfc tag
-            nfcconnect.write_card(unique_id)
+        # write to current unit
+        self.mainwindow.currentunit.unique_id = unique_id
+        message = QMessageBox.information(self, f"NFC written", f"Character ID ({self.mainwindow.currentunit.unique_id} for character {self.mainwindow.currentunit.name} written succesfully to NFC.", QMessageBox.Ok)
+        self.mainwindow.initUI()
 
-            # write to current unit
-            self.mainwindow.currentunit.unique_id = unique_id
-            message = QMessageBox.information(self, f"NFC written", f"Character ID ({self.mainwindow.currentunit.unique_id} for character {self.mainwindow.currentunit.name} written succesfully to NFC.", QMessageBox.Ok)
-            self.mainwindow.initUI()
-
-        except:
-            message = QMessageBox.information(self, f"Failed to connect to NFC!", f"Please try again and hold the NFC tag near the NFC reader (< 10 cm)!", QMessageBox.Ok)
-            return
+        # except:
+        #     message = QMessageBox.information(self, f"Failed to connect to NFC!", f"Please try again and hold the NFC tag near the NFC reader (< 10 cm)!", QMessageBox.Ok)
+        #     return
 
     def get_nfc_link(self):
         
@@ -269,7 +273,10 @@ class WidgetCurrent(QRaisedFrame):
             nfcconnect = NFCconnection.initialize()
 
             # read tag
-            unique_id = nfcconnect.read_card()
+            nfcdata = nfcconnect.read_card()
+            print(nfcdata)
+            unique_id = int(nfcdata.hex(), 16)
+            print(unique_id)
 
             idfound = False
             # check if id matches a hero
