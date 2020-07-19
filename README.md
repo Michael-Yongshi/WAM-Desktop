@@ -28,6 +28,10 @@ Individual Henchman release 1.10 (beta) - 2020-07-07
 - Added button for linking character to a NFC tag using a unique id
 - Added button for reading NFC and find character (will be changed to automatic later)
 
+SEE PY-LIBRARY-NFC FOR UBUNTU NFC FIXES:
+https://github.com/Michael-Yongshi/Py-Library-NFC/tree/fix_ubuntu
+
+
 ### Release 1.00
 Win10-64: https://www.jottacloud.com/s/130dc76091c06c94f73a7b79378122252f5
 
