@@ -478,7 +478,7 @@ class WidgetCurrent(QRaisedFrame):
                         index = currentsquad.henchmanlist.index(currentunit)
                         currentsquad.henchmanlist.pop(index)
 
-                        result = f"A member of your squad {currentsquad.name} proved himself beyond his peers and became a hero!"
+                        result = f"Character {currentunit.name} of your squad {currentsquad.name} proved himself beyond his peers and became a hero!"
                         message = QMessageBox.information(self, f"This lads got talent!", result, QMessageBox.Ok)
 
                         if currentsquad.get_totalhenchman() == 0:

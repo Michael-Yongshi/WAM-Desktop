@@ -129,7 +129,7 @@ pyinstaller -F cli.py --add-data "lib/wam_core/database/references/*.json":"lib/
 ```
 directory
 ```
-pyinstaller cli.py --add-data "lib/wam_core/database/references/*.json":"lib/wam_core/database/references/" --name WAM-Ubuntu18-64-major-minor-patch-ext
+pyinstaller cli.py --name WAM-Ubuntu18-64-major-minor-patch-ext
 ```
 
 ### create a distribution from spec file with 
