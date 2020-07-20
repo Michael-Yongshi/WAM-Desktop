@@ -18,6 +18,10 @@ Win10-64: https://www.jottacloud.com/s/130542021d8feef4f458ee5a2d6bf74862a
 
 Ubuntu18-64: https://www.jottacloud.com/s/1305442054280194dfaa20c392243302191
 
+Hotfix 2020-07-20
+- Fixed nfc for ubuntu
+- Fixed database crashes and other optimizations
+
 Individual Henchman release 1.10 (beta) - 2020-07-07
 - Changed squad view to tabs with individual henchman that you can rename and select
 - Added buttons for removing a character (release means you get money back, perish and you don't)
