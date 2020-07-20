@@ -56,18 +56,24 @@ pip3 install --user pyqt5
 sudo apt-get install python3 pyqt5           # (prod) if pip3 doesn't work
 ```
 
-### yongshi-guidarktheme
+### PyQt5 Dark Theme
 Dark Theme settings package (>= v1.0)
 ```
-pip3 install --user yongshi-guidarktheme
+pip3 install --user pyqt-darktheme
 ```
 
-### Pyscard
+### Py nfc
+```
+
+```
+
+### NFC
 NFC reader package
 
 #### windows
 ```
 pip3 install --user pyscard
+pip3 install yongshi-pynfc
 ```
 
 #### ubuntu
@@ -80,6 +86,13 @@ sudo apt install -y python3-pyscard
 sudo vim /etc/modprobe.d/blacklist-libnfc.conf
 # Add this line: blacklist pn533_usb
 # Reboot
+
+sudo apt install -y python3-yongshi-pynfc
+```
+
+### WAM core
+```
+pip3 install WAM-Core
 ```
 
 ## Running the tests

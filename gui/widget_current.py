@@ -29,9 +29,9 @@ from PyQt5.QtGui import (
     QIcon,
     )
 
-from lib.py_library_nfc.source.class_nfc import NFCconnection
+from pynfc.class_nfc import NFCconnection
 
-from lib.wam_core.source.methods_engine import (
+from wamcore.methods_engine import (
     save_warband,
     load_warband,
     show_warbands,
@@ -39,7 +39,7 @@ from lib.wam_core.source.methods_engine import (
     load_reference,
     )
 
-from lib.wam_core.source.class_hierarchy import (
+from wamcore.class_hierarchy import (
     Warband,
     Squad,
     Character,
@@ -259,7 +259,7 @@ class WidgetCurrent(QRaisedFrame):
 
         # write to current unit
         self.mainwindow.currentunit.unique_id = unique_id
-        message = QMessageBox.information(self, f"NFC written", f"Character ID ({self.mainwindow.currentunit.unique_id} for character {self.mainwindow.currentunit.name} written succesfully to NFC.", QMessageBox.Ok)
+        message = QMessageBox.information(self, f"NFC written", f"Character ID ({self.mainwindow.currentunit.unique_id}) for character {self.mainwindow.currentunit.name} written succesfully to NFC.", QMessageBox.Ok)
         self.mainwindow.initUI()
 
         # except:

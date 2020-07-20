@@ -26,7 +26,7 @@ from PyQt5.QtGui import (
     QIcon,
     )
 
-from lib.wam_core.source.methods_engine import (
+from wamcore.methods_engine import (
     save_warband,
     load_warband,
     show_warbands,
@@ -34,7 +34,7 @@ from lib.wam_core.source.methods_engine import (
     load_reference,
     )
 
-from lib.wam_core.source.class_hierarchy import (
+from wamcore.class_hierarchy import (
     Warband,
     Squad,
     Character,
