@@ -62,11 +62,6 @@ Dark Theme settings package (>= v1.0)
 pip3 install --user pyqt-darktheme
 ```
 
-### Py nfc
-```
-
-```
-
 ### NFC
 NFC reader package
 
@@ -119,7 +114,7 @@ pip3 install --user pyinstaller         # (dev) to create an installer for deskt
 #### Windows 10 (64bit)
 directory
 ```
-python -m PyInstaller cli.py --add-data "lib/wam_core/database/references/*.json";"lib/wam_core/database/references/" --icon="gui\warhammer_icon.ico" --name WAM-Win10-64-major-minor-patch-ext
+python -m PyInstaller cli.py --icon="gui\warhammer_icon.ico" --name WAM-Win10-64-major-minor-patch-ext
 ```
 
 #### Ubuntu 18 (64bit)
