@@ -120,7 +120,7 @@ python -m PyInstaller cli.py --icon="gui\warhammer_icon.ico" --name WAM-Win10-64
 #### Ubuntu 18 (64bit)
 appimage
 ```
-pyinstaller -F cli.py --add-data "lib/wam_core/database/references/*.json":"lib/wam_core/database/references/" --name WAM-Ubuntu18-64-major-minor-patch-ext
+pyinstaller -F cli.py --name WAM-Ubuntu18-64-major-minor-patch-ext
 ```
 directory
 ```
