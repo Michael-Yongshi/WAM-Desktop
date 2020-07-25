@@ -72,7 +72,7 @@ class WidgetSystem(QBorderedWidget):
         btnsave = QPushButton('Save Warband', self)
         btnsave.setShortcut("Ctrl+S")
         btnsave.setToolTip('Save current <b>Warband</b>')
-        btnsave.clicked.connect(self.call_save_warband)
+        btnsave.clicked.connect(self.mainwindow.call_save_warband)
 
         # btnquit = QPushButton('Quit', self)
         # btnquit.setToolTip('Quit the program')
@@ -86,11 +86,6 @@ class WidgetSystem(QBorderedWidget):
         self.setToolTip("Create a new warband, load a warband from memory or save current warband.")
         self.setLayout(sysbox)
 
-    def call_save_warband(self):
-        datadict = self.mainwindow.wbid.to_dict()
-        save_warband(datadict)
-        QMessageBox.information(self, "Saved", "Save successful!", QMessageBox.Ok)
-
     def choose_warband(self):
         """Choose a warband to be loaded into cache and then shown on screen"""
         
@@ -100,18 +95,14 @@ class WidgetSystem(QBorderedWidget):
         # Let user choose out of save files
         wbname, okPressed = QInputDialog.getItem(self, "Choose", "Choose your warband", warbands, 0, False)
         if okPressed and wbname:
+            
             # Load warband dictionary 
             wbdict = load_warband(wbname)
+            
             # convert warband dict to object
             wbobj = Warband.from_dict(wbdict)
-            # set chosen warband as object in main window
-            self.mainwindow.wbid = wbobj
 
-            # set empty current unit to main window
-            self.mainwindow.currentunit = Character.create_template()
-
-            # Restart the main window to force changes
-            self.mainwindow.initUI() 
+            self.set_warband(wbobj)
             
     def create_warband(self):
         """Create a new warband and store it in cache"""
@@ -146,11 +137,25 @@ class WidgetSystem(QBorderedWidget):
                     if okPressed and warband:
                         # Create new warband object
                         wbobj = Warband.create_warband(name=name, race=race, source=source, warband=warband)
-                        # Load warband object to main window
-                        self.mainwindow.wbid = wbobj
 
-                        # set an empty character as currentunit
-                        self.mainwindow.currentunit = Character.create_template()
-                        
-                        # restart ui to force changes
-                        self.mainwindow.initUI()
+                        self.set_warband(wbobj)
+
+    def set_warband(self, wbobj):
+
+        # Load warband object to main window
+        self.mainwindow.wbid = wbobj
+
+        # set an empty character as currentunit
+        self.mainwindow.currentunit = Character.create_template()
+        
+        # ask for autosaving
+        self.autosave_dialog()
+
+        # restart ui to force changes
+        self.mainwindow.initUI()
+
+    def autosave_dialog(self):
+        autosave = QMessageBox.question(self, "Use Autosaving?", "Do you want to use autosave for this warband?<br/>Back up your save regularly using this feature!", QMessageBox.Yes | QMessageBox.No)
+        if autosave == QMessageBox.Yes:
+            self.mainwindow.autosave = True
+            print(f"turned on autosaving")
