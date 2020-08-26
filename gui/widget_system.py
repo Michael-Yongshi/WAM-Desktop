@@ -27,7 +27,7 @@ from PyQt5.QtGui import (
     QIcon,
     )
 
-from wamcore.database import (
+from wamcore.database.database_methods import (
     get_database_records,
 )
 
