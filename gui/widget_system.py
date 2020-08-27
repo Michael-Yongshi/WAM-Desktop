@@ -7,11 +7,16 @@ from PyQt5.QtCore import (
 
 from PyQt5.QtWidgets import (
     QApplication,
+    QComboBox,
+    QDialog,
+    QDialogButtonBox,
+    QFormLayout,
     QFrame,
     QGridLayout,
     QHBoxLayout,
     QInputDialog,
     QLabel,
+    QLineEdit,
     QMainWindow,
     QMessageBox,
     QProgressBar,
@@ -119,37 +124,74 @@ class WidgetSystem(QBorderedWidget):
             
     def create_warband(self):
         """Create a new warband and store it in cache"""
-        name, okPressed = QInputDialog.getText(self, "Create", "Name your warband:")
-        if okPressed and name:
             
-            # get all races in references
-            warband_records = get_database_records("warbands")
-            if warband_records == None:
-                QMessageBox(self, f"Error", f"Could not load database files")
-                return
+        # get all races in references
+        warband_records = get_database_records("warbands")
+        if warband_records == None:
+            QMessageBox(self, f"Error", f"Could not load database files")
+            return
+        
+        dialog = CreateDialog(self.mainwindow, warband_records)
+        if dialog.exec():
 
-            warbands = []
             for record in warband_records:
-                warband = f"{record.primarykey}-"
-                for valuepair in record.valuepairs[:3]:
-                    warband += f"{valuepair[1]}-"
+                if record.primarykey == dialog.getSelectedID():
+                    warbanddict = record.recorddict
+                    print(f"recorddict {warbanddict}")
+                    name = dialog.name
+                    warband = warbanddict["name"]
+                    race = warbanddict["race"]
+                    source = warbanddict["source"]
+                    break
+
+            # Create new warband object
+            wbobj = Warband.create_warband(name=name, race=race, source=source, warband=warband)
             
-            warband, okPressed = QInputDialog.getItem(self, "Create", "Choose a warband", warbands, 0, False)
-            if okPressed and warband:
+            # Load warband object to main window
+            self.mainwindow.wbid = wbobj
 
-                for record in warband_records:
-                    if record.primarykey == warband.split('-', 1)[0]:
-                        warbanddict = record.recorddict
-                        print(f"recorddict {warbanddict}")
+            # set an empty character as currentunit
+            self.mainwindow.currentunit = Character.create_template()
+            
+            # restart ui to force changes
+            self.mainwindow.initUI()
 
-                # Create new warband object
-                wbobj = Warband.create_warband(name=name, race=warbanddict["race"], source=warbanddict["source"], warband=warband["name"])
-                
-                # Load warband object to main window
-                self.mainwindow.wbid = wbobj
 
-                # set an empty character as currentunit
-                self.mainwindow.currentunit = Character.create_template()
-                
-                # restart ui to force changes
-                self.mainwindow.initUI()
+class CreateDialog(QDialog):
+    def __init__(self, mainwindow, warband_records):
+        super().__init__()
+
+        self.mainwindow = mainwindow
+        self.setWindowTitle("Create a new warband")
+
+        self.name = QLineEdit(self)
+        self.name.setText("warband")
+        self.name.setToolTip("Insert a name")
+
+        self.warband = QComboBox()
+        for record in warband_records:
+            warbandtext = f""
+            for valuepair in record.recordpairs:
+                print(valuepair)
+                if valuepair[0] == "id":
+                    warbandid = valuepair[1]
+                elif (valuepair[0] == "race") or (valuepair[0] == "source") or (valuepair[0] == "name"):
+                    warbandtext += f"{valuepair[1]} - "
+            self.warband.addItem(warbandtext, warbandid)
+        
+        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
+
+        layout = QFormLayout(self)
+        layout.addRow("Name", self.name)
+        layout.addRow("Warband", self.warband)
+
+        layout.addWidget(buttonBox)
+
+        buttonBox.accepted.connect(self.accept)
+        buttonBox.rejected.connect(self.reject)
+
+    def getSelectedID(self):
+        index = self.warband.currentIndex()
+        warbandId = self.warband.itemData(index)
+
+        return warbandId
