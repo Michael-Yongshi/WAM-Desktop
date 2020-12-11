@@ -46,12 +46,12 @@ Hotfix for release 1.00 - 2020-06-13
 
 ## Development
 
-### install dependencies
+### install code dependencies
 ```
 pip3 install --upgrade -r requirements.txt 
 ```
 
-### PyQt5
+#### PyQt5
 GUI package
 
 ```
@@ -59,22 +59,22 @@ pip3 install --user pyqt5
 sudo apt-get install python3 pyqt5           # (prod) if pip3 doesn't work
 ```
 
-### PyQt5 Dark Theme
+#### PyQt5 Dark Theme
 Dark Theme settings package (>= v1.0)
 ```
 pip3 install --user pyqt-darktheme
 ```
 
-### NFC
+#### NFC
 NFC reader package
 
-#### windows
+##### windows
 ```
 pip3 install --user pyscard
 pip3 install yongshi-pynfc
 ```
 
-#### ubuntu
+##### ubuntu
 ```
 sudo apt install swig # needed to install pyscard
 sudo apt install pcscd # needed to scan for readers on ubuntu
@@ -88,10 +88,14 @@ sudo vim /etc/modprobe.d/blacklist-libnfc.conf
 sudo apt install -y python3-yongshi-pynfc
 ```
 
-### WAM core
+#### WAM core
 ```
 pip3 install WAM-Core
 ```
+
+### Install build dependencies
+#### setuptools
+#### twine
 
 ## Running the tests
 
