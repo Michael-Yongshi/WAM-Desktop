@@ -54,7 +54,7 @@ from wamcore.class_hierarchy import (
     Event,
     )
 
-from guidarktheme.widget_template import *
+from darktheme.widget_template import *
 from gui.widget_items import WidgetItemsUnit
 from gui.widget_abilitymagic import WidgetAbility, WidgetMagic
 

@@ -49,7 +49,7 @@ from wamcore.class_hierarchy import (
     Magic,
     )
 
-from guidarktheme.widget_template import *
+from darktheme.widget_template import *
 
 
 class WidgetSystem(QBorderedWidget):

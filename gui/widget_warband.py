@@ -51,7 +51,7 @@ from wamcore.class_hierarchy import (
     Magic,
     )
 
-from guidarktheme.widget_template import *
+from darktheme.widget_template import *
 from gui.widget_items import WidgetItemsWarband
 
 class WidgetWarband(QRaisedFrame):

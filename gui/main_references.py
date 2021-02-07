@@ -80,7 +80,7 @@ from wamcore.class_components import (
     Magic,
     )
 
-from guidarktheme.widget_template import *
+from darktheme.widget_template import *
 from gui.main import QMainApplication
 
 class MainReferences(QMainWindow):

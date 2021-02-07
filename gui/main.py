@@ -49,7 +49,7 @@ from wamcore.class_hierarchy import (
     Magic,
     )
 
-from guidarktheme.widget_template import *
+from darktheme.widget_template import *
 
 from gui.widget_warband import WidgetWarband
 from gui.widget_items import WidgetItemsWarband
@@ -66,7 +66,7 @@ class QMainApplication(QApplication):
         
         QFontDatabase.addApplicationFont("source/schoensperger.otf")
         self.setStyle("Fusion")
-        self.setPalette(QDarkPalette())
+        self.setPalette(DarkPalette())
         # self.setFont(QFont("schoensperger", 20))
         self.setStyleSheet("QToolTip { color: #ffffff; background-color: grey; border: 1px solid white; }")
     
