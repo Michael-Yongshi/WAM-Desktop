@@ -78,10 +78,16 @@ class WarbandOverview(QMainWindow):
         self.wbid = Warband.create_template()
         self.currentunit = Character.create_template()
         self.currentthing = None
+        self.autosave = False
+
         self.initUI()
 
     def initUI(self):
-       
+
+        if self.autosave == True:
+            print(f"autosaved!")
+            self.call_save_warband()
+
         # Some window settings
         self.setWindowTitle('Warhammer Army Manager')
         self.setWindowIcon(QIcon('war_72R_icon.ico'))     
@@ -134,6 +140,12 @@ class WarbandOverview(QMainWindow):
     def remove_focus(self):
         self.currentunit = None
         self.initUI
+
+    def call_save_warband(self):
+        print(f"Saving warband {self.wbid.name}")
+        datadict = self.wbid.to_dict()
+        save_warband(datadict)
+        QMessageBox.information(self, "Saved", "Save successful!", QMessageBox.Ok)
 
 def run():
     global app

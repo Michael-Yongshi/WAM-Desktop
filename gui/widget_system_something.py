@@ -53,7 +53,7 @@ from wamcore.class_hierarchy import (
     Magic,
     )
 
-from darktheme.widget_template import *
+from guidarktheme.widget_template import *
 
 
 class WidgetSystem(QBorderedWidget):

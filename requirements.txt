@@ -1,8 +1,15 @@
 ###### Requirements without Version Specifiers ######`
+# function tools
 pyqt5
 pyqt-darktheme
 WAM-Core
 yongshi-pynfc
+pyqt-darktheme
+
+# buildtools
+setuptools
+twine
+pyinstaller
 
 ###### Requirements with Version Specifiers ######`
 # pyqt5 >= 0.6.1             # Version Matching. Must be version 0.6.1
