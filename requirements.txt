@@ -5,6 +5,7 @@ pyqt-darktheme
 WAM-Core
 yongshi-pynfc
 pyqt-darktheme
+sqlitemanager
 
 # buildtools
 setuptools
