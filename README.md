@@ -1,4 +1,7 @@
 # Warhammer Army Manager (WAM) Desktop
+
+!!!Currently Master branch is broken, the latest release should work for users though, working on a fix, thanks!!!
+
 An application in order to create, update, view and save your warband details for use in the Mordheim Warhammer world. Using this application there is no need anymore for manually calculating skills or looking up your warbands details, including references to all item, spells, abilities, etc. that are ingame and the rules governing engagements.
 
 The desktop frontend for the WAM application, used for Linux and Windows
