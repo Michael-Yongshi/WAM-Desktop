@@ -123,45 +123,32 @@ class WidgetSystem(QBorderedWidget):
         if okPressed and name:
             
             # get all warbands from the database
-            warband_records = get_database_records("warbands")
-            print(f"warband records: {warband_records}")
-
-            if warband_records == None:
+            wbtable = load_reference("warbands")
+            if wbtable == None:
                 QMessageBox(self, f"Error", f"Could not load database files")
                 return
 
+            # create a list of choices
             warbands = []
-            for record in warband_records:
-                warbandtext = f"{record.primarykey}-"
-                for valuepair in record.valuepairs[:3]:
-                    warbandtext += f"{valuepair[1]}-"
+            for record in wbtable:
+                pk = record.primarykey
+                race = record.recorddict["race"]
+                source = record.recorddict["source"]
+                base = record.recorddict["base"]
+                warbandtext = f"{pk}-{race}-{source}-{base}"
+
                 warbands += [warbandtext]
             
+            # let user choose from the list
             warband, okPressed = QInputDialog.getItem(self, "Create", "Choose a warband", warbands, 0, False)
             if okPressed and warband:
                 
-                # print(f"chosen {warband}")
-                for record in warband_records:
-                    warbandkey = warband.split('-', 1)[0]
-
-                    if record.primarykey == int(warband.split('-', 1)[0]):
-                        warbanddict = record.recorddict
-                        # print(f"warbanddict {warbanddict}")
-                        race = warbanddict["race"]
-                        source = warbanddict["source"]
-                        warband = warbanddict["name"]
-                        break
-
-                # Create new warband object
-                wbobj = Warband.create_warband(
-                    name=name, 
-                    race=race, 
-                    source=source, 
-                    warband=warband
-                    )
+                # take the primary key from the chosen awnser and get the warband object
+                pk = int(warband.split('-', 1)[0])
+                warband_object = Warband.from_database(pk)
                 
                 # Load warband object to main window
-                self.mainwindow.wbid = wbobj
+                self.mainwindow.wbid = warband_object
 
                 # set an empty character as currentunit
                 self.mainwindow.currentunit = Character.create_template()
