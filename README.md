@@ -88,7 +88,7 @@ sudo vim /etc/modprobe.d/blacklist-libnfc.conf
 # Add this line: blacklist pn533_usb
 # Reboot
 
-sudo apt install -y python3-yongshi-pynfc
+sudo apt install -y python3-pynfc
 ```
 
 #### WAM core

@@ -27,11 +27,11 @@ from PyQt5.QtGui import (
     QIcon,
     )
 
-from wamcore.database.database_methods import (
+from wamcore.core.database.database_methods import (
     get_database_records,
 )
 
-from wamcore.methods_engine import (
+from wamcore.core.methods_engine import (
     save_warband,
     load_warband,
     show_warbands,
@@ -39,7 +39,7 @@ from wamcore.methods_engine import (
     load_reference,
     )
 
-from wamcore.class_hierarchy import (
+from wamcore.core.class_hierarchy import (
     Warband,
     Squad,
     Character,
@@ -122,7 +122,7 @@ class WidgetSystem(QBorderedWidget):
         name, okPressed = QInputDialog.getText(self, "Create", "Name your warband:")
         if okPressed and name:
             
-            # get all races in references
+            # get all warbands from the database
             warband_records = get_database_records("warbands")
             print(f"warband records: {warband_records}")
 

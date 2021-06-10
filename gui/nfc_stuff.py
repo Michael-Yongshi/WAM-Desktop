@@ -1,6 +1,6 @@
 import os
 
-from lib.py_library_nfc.source.class_nfc import NFCconnection
+from pynfc.class_nfc import NFCconnection
 
     # FOR 2 SCANNERS: READER CENTRIC APPROACH. FOR 1 SCANNER THE NORMAL CARD CENTRIC APPROACH
     # FIRST CHECK IF THERE ARE 2 SCANNERS (LEN(READERS) == 2), IF IT DOES SWITCH TO READER CENTRIC

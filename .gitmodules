@@ -1,0 +1,3 @@
+[submodule "wamcore"]
+	path = wamcore
+	url = github:michael-yongshi/wam-core

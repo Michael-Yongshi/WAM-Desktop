@@ -2,10 +2,10 @@
 # function tools
 pyqt5
 pyqt-darktheme
-WAM-Core
 yongshi-pynfc
-pyqt-darktheme
 sqlitemanager
+ndef
+pyscard
 
 # buildtools
 setuptools
