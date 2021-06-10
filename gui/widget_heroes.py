@@ -155,31 +155,29 @@ class WidgetHeroes(QWidget):
         name, okPressed = QInputDialog.getText(self, "Create", "Name your hero:")
         if okPressed and name:
             
-            # get all categories in references
-            wbrace = self.mainwindow.wbid.race
-            wbsource = self.mainwindow.wbid.source
-            wbwarband = self.mainwindow.wbid.warband
-            datadict = load_reference("characters")
+            # get applicable characters to choose from
+            character_list = self.mainwindow.wbid.get_characters()
             categories = []
             
-            for key in datadict[wbrace][wbsource][wbwarband]:
-                if datadict[wbrace][wbsource][wbwarband][key]["ishero"] == True:
-                    categories.append(key)
+            for character in character_list:
+                if character.ishero == True:
+                    pk = character.database_id
+                    race = character.race
+                    source = character.source
+                    base = character.warband
+                    category = character.category
+                    charactertext = f"{pk}-{race}-{source}-{base}-{category}"
+                    categories.append(charactertext)
 
-            category, okPressed = QInputDialog.getItem(self, "Create", "Choose a category", categories, 0, False)
-            if okPressed and category:
-                new_hero = Hero.create_character(
-                    name=name,
-                    race=wbrace,
-                    source=wbsource,
-                    warband=wbwarband,
-                    category=category,
-                )
+            hero, okPressed = QInputDialog.getItem(self, "Create", "Choose a character", categories, 0, False)
+            if okPressed and hero:
+                # take the primary key from the chosen awnser and get the character object
+                pk = int(hero.split('-', 1)[0])
+                new_hero = Hero.from_database(primarykey=pk)
 
                 wbidgold = self.mainwindow.wbid.treasury.gold
-                heroprice = datadict[wbrace][wbsource][wbwarband][category]["price"]
-                if wbidgold >= heroprice:
-                    self.mainwindow.wbid.treasury.gold = wbidgold - heroprice
+                if wbidgold >= new_hero.price:
+                    self.mainwindow.wbid.treasury.gold = wbidgold - new_hero.price
                     self.mainwindow.wbid.herolist.append(new_hero)
                     self.mainwindow.currentunit = new_hero
                     self.mainwindow.initUI()
