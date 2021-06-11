@@ -1,51 +1,15 @@
 
-from PyQt5.QtCore import (
-    Qt,
-    pyqtSignal,
-    )
-
 from PyQt5.QtWidgets import (
-    QApplication,
-    QFrame,
     QGridLayout,
-    QHBoxLayout,
     QInputDialog,
     QLabel,
-    QMainWindow,
     QMessageBox,
-    QProgressBar,
-    QPushButton, 
-    QSizePolicy,
     QVBoxLayout,
     QWidget, 
     )
 
-from PyQt5.QtGui import (
-    QFont,
-    QFontDatabase,
-    QIcon,
-    )
-
-from wamcore.core.methods_engine import (
-    save_warband,
-    load_warband,
-    show_warbands,
-    save_reference,
-    load_reference,
-    )
-
 from wamcore.core.class_hierarchy import (
-    Warband,
-    Squad,
-    Character,
     Hero,
-    Henchman,
-    Rule,
-    Treasury,
-    Item,
-    Skill,
-    Ability,
-    Magic,
     )
 
 from darktheme.widget_template import *
@@ -166,10 +130,10 @@ class WidgetHeroes(QWidget):
                     charactertext = f"{pk}-{category}"
                     categories.append(charactertext)
 
-            hero, okPressed = QInputDialog.getItem(self, "Create", "Choose a character", categories, 0, False)
-            if okPressed and hero:
+            category, okPressed = QInputDialog.getItem(self, "Create", "Choose a character", categories, 0, False)
+            if okPressed and category:
                 # take the primary key from the chosen awnser and get the character object
-                pk = int(hero.split('-', 1)[0])
+                pk = int(category.split('-', 1)[0])
                 new_hero = Hero.from_database(primarykey=pk)
                 new_hero.name = name
 
