@@ -1,4 +1,5 @@
 
+from os import name
 from PyQt5.QtCore import (
     Qt,
     pyqtSignal,
@@ -109,45 +110,27 @@ class WidgetAbility(QBorderlessFrame):
 
     @staticmethod
     def dialog_new_ability(mainwindow):
-        abilitydict = load_reference("abilities")
+        records = load_reference("abilities")
         
-        # get all main categories
-        mains = []
-        for key in abilitydict:
-            mains.append(key)
+        # categories
+        categories = []
+        for record in records:
+            pk = record.primarykey
+            category = record.recorddict["maincategory"]
+            subcategory = record.recorddict["category"]
+            source = record.recorddict["source"]
+            name = record.recorddict["name"]
+            text = f"{pk}-{source}-{category}-{subcategory}-{name}"
+            categories.append(text)
 
-        main, okPressed = QInputDialog.getItem(mainwindow, "Select Main category", "Choose a main category", mains, 0, False)
-        if okPressed and main:
+        ability, okPressed = QInputDialog.getItem(mainwindow, "Select Main category", "Choose a main category", categories, 0, False)
+        if okPressed and ability:
 
-            # get all available categories
-            categories = []
-            for key in abilitydict[main]:
-                categories.append(key)
+            # take the primary key from the chosen awnser and get the python object
+            pk = int(ability.split('-', 1)[0])
+            new_ability = Ability.from_database(primarykey=pk)
 
-            category, okPressed = QInputDialog.getItem(mainwindow, "Select category", "Choose a category", categories, 0, False)
-            if okPressed and category:
-
-                sources = []
-                for key in abilitydict[main][category]:
-                    sources.append(key)
-
-                source, okPressed = QInputDialog.getItem(mainwindow, "Select source", "Choose a source", sources, 0, False)
-                if okPressed and source:
-
-                    # get all available abilities
-                    abilities = []
-                    for key in abilitydict[main][category][source]:
-                        abilities.append(key)
-
-                    ability, okPressed = QInputDialog.getItem(mainwindow, "Create", "Choose an ability", abilities, 0, False)
-                    if okPressed and ability:
-                        new_ability = Ability.create_ability(
-                            source = source,
-                            main = main,
-                            category = category,
-                            name = ability,
-                        )
-                        return new_ability
+            return new_ability
 
     def create_method_remove(self, unit, ability):          
         """ """
@@ -234,35 +217,27 @@ class WidgetMagic(QBorderlessFrame):
 
     @staticmethod
     def dialog_new_magic(mainwindow):
-        magicdict = load_reference("magic")
-        sources = []
-        for key in magicdict:
-            sources.append(key)
+        records = load_reference("magics")
 
-        source, okPressed = QInputDialog.getItem(mainwindow, "Select source", "Choose a source", sources, 0, False)
-        if okPressed and source:
-        
-            # get all available categories
-            categories = []
-            for key in magicdict[source]:
-                categories.append(key)
+        # categories
+        categories = []
+        for record in records:
+            pk = record.primarykey
+            category = record.recorddict["category"]
+            subcategory = record.recorddict["name"]
+            source = record.recorddict["source"]
+            text = f"{pk}-{source}-{category}-{subcategory}"
+            categories.append(text)
 
-            category, okPressed = QInputDialog.getItem(mainwindow, "Create", "Choose a category", categories, 0, False)
-            if okPressed and category:
+        magic, okPressed = QInputDialog.getItem(mainwindow, "Select Magic", "Choose a Magic", categories, 0, False)
+        if okPressed and magic:
 
-                # get all available magic
-                magics = []
-                for key in magicdict[source][category]:
-                    magics.append(key)
+            # take the primary key from the chosen awnser and get the python object
+            pk = int(magic.split('-', 1)[0])
+            new_magic = Magic.from_database(primarykey=pk)
 
-                magic, okPressed = QInputDialog.getItem(mainwindow, "Create", "Choose magic", magics, 0, False)
-                if okPressed and magic:
-                    new_magic = Magic.create_magic(
-                        name = magic,
-                        category = category,
-                        source = source,
-                    )
-                    return new_magic
+            return new_magic
+
 
     def create_method_remove(self, unit, magic):          
         """ """
