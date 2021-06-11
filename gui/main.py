@@ -1,58 +1,30 @@
 import sys
 
-from PyQt5.QtCore import (
-    Qt,
-    pyqtSignal,
-    )
-
 from PyQt5.QtWidgets import (
     QApplication,
-    QFrame,
     QGridLayout,
-    QHBoxLayout,
-    QInputDialog,
-    QLabel,
     QMainWindow,
     QMessageBox,
-    QProgressBar,
-    QPushButton, 
     QSizePolicy,
-    QVBoxLayout,
-    QWidget, 
     )
 
 from PyQt5.QtGui import (
-    QFont,
     QFontDatabase,
     QIcon,
     )
 
 from wamcore.core.methods_engine import (
     save_warband,
-    load_warband,
-    show_warbands,
-    save_reference,
-    load_reference,
     )
 
 from wamcore.core.class_hierarchy import (
     Warband,
-    Squad,
     Character,
-    Hero,
-    Henchman,
-    Rule,
-    Treasury,
-    Item,
-    Skill,
-    Ability,
-    Magic,
     )
 
 from darktheme.widget_template import *
 
 from gui.widget_warband import WidgetWarband
-from gui.widget_items import WidgetItemsWarband
 from gui.widget_system import WidgetSystem
 from gui.widget_heroes import WidgetHeroes
 from gui.widget_squads import WidgetSquads
