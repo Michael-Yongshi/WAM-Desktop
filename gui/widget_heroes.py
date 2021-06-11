@@ -162,11 +162,8 @@ class WidgetHeroes(QWidget):
             for character in character_list:
                 if character.ishero == True:
                     pk = character.database_id
-                    race = character.race
-                    source = character.source
-                    base = character.warband
                     category = character.category
-                    charactertext = f"{pk}-{race}-{source}-{base}-{category}"
+                    charactertext = f"{pk}-{category}"
                     categories.append(charactertext)
 
             hero, okPressed = QInputDialog.getItem(self, "Create", "Choose a character", categories, 0, False)
@@ -174,7 +171,9 @@ class WidgetHeroes(QWidget):
                 # take the primary key from the chosen awnser and get the character object
                 pk = int(hero.split('-', 1)[0])
                 new_hero = Hero.from_database(primarykey=pk)
+                new_hero.name = name
 
+                # add hero to warband and deduct from gold
                 wbidgold = self.mainwindow.wbid.treasury.gold
                 if wbidgold >= new_hero.price:
                     self.mainwindow.wbid.treasury.gold = wbidgold - new_hero.price
