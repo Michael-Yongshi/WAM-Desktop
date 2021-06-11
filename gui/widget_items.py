@@ -197,49 +197,27 @@ class WidgetItemsUnit(QBorderlessFrame):
 
 def dialog_choose_item(self):
     
-    datadict = load_reference("items")
+    records = load_reference("items")
     
     # categories
     categories = []
-    for key in datadict:
-        categories.append(key)
+    for record in records:
+        pk = record.primarykey
+        category = record.recorddict["category"]
+        subcategory = record.recorddict["subcategory"]
+        source = record.recorddict["source"]
+        itemtext = f"{pk}-{source}-{category}-{subcategory}"
+        categories.append(itemtext)
 
-    category, okPressed = QInputDialog.getItem(self, "Create", "Choose a category", categories, 0, False)
-    if okPressed and category:
+    item, okPressed = QInputDialog.getItem(self, "Select", "Choose an item", categories, 0, False)
+    if okPressed and item:
 
-        # sources
-        sources = []
-        for key in datadict[category]:
-            sources.append(key)
-
-        source, okPressed = QInputDialog.getItem(self, "Select source", "Choose a source", sources, 0, False)
-        if okPressed and source:
+        # take the primary key from the chosen awnser and get the python object
+        pk = int(item.split('-', 1)[0])
+        new_item = Item.from_database(primarykey=pk)
         
-            # subcategories
-            subcategories = []
-            for key in datadict[category][source]:
-                subcategories.append(key)
-
-            subcategory, okPressed = QInputDialog.getItem(self, "Create", "Choose an item", subcategories, 0, False)
-            if okPressed and subcategory:
-                new_item = Item.create_item(
-                    subcategory = subcategory,
-                    category = category,
-                    source = source,
-                )
-                
-                if new_item == None:
-                    new_item = "Cancel"
-                    message = QMessageBox.information(self, f"Coulnd't add item!", f"Can't add item {subcategory} from database, please create an issue at https://github.com/Michael-Yongshi/WAM-Desktop/issues", QMessageBox.Ok)
-                
-                return new_item
-                
-            else:
-                string = "Cancel"
-                return string
-        else:
-            string = "Cancel"
-            return string
+        return new_item
+              
     else:
         string = "Cancel"
         return string
