@@ -145,8 +145,9 @@ class WidgetSystem(QBorderedWidget):
                 
                 # take the primary key from the chosen awnser and get the warband object
                 pk = int(warband.split('-', 1)[0])
-                warband_object = Warband.from_database(pk)
-                
+                warband_object = Warband.from_database(primarykey=pk)
+                warband_object.name = name
+
                 # Load warband object to main window
                 self.mainwindow.wbid = warband_object
 
