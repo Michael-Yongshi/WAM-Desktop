@@ -109,7 +109,7 @@ class WidgetSystem(QBorderedWidget):
             warband, okPressed = QInputDialog.getItem(self, "Create", "Choose a warband", warbands, 0, False)
             if okPressed and warband:
                 
-                # take the primary key from the chosen awnser and get the warband object
+                # take the primary key from the chosen awnser and get the python object
                 pk = int(warband.split('-', 1)[0])
                 warband_object = Warband.from_database(primarykey=pk)
                 warband_object.name = name
