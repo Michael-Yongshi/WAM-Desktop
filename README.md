@@ -1,7 +1,4 @@
 # Warhammer Army Manager (WAM) Desktop
-
-!!!Currently Master branch is broken, the latest release should work for users though, working on a fix, thanks!!!
-
 An application in order to create, update, view and save your warband details for use in the Mordheim Warhammer world. Using this application there is no need anymore for manually calculating skills or looking up your warbands details, including references to all item, spells, abilities, etc. that are ingame and the rules governing engagements.
 
 The desktop frontend for the WAM application, used for Linux and Windows
@@ -10,11 +7,12 @@ The desktop frontend for the WAM application, used for Linux and Windows
 For Missile and Blackpowder weapons an additional strength modifier is created named 'Impact', in order to seperate the strength skill of melee and ranged attacks.
 
 ## Release Notes
+### Release 1.3: SQLite
+- Database is now based on SQLite3
+- Cleaned up code
+- Switched back to submodule for WAM-Core; wamcore will be removed from Pip in the near future.
+
 ### Release 1.10
-Win10-64: https://www.jottacloud.com/s/130542021d8feef4f458ee5a2d6bf74862a
-
-Ubuntu18-64: https://www.jottacloud.com/s/1305442054280194dfaa20c392243302191
-
 Hotfix 2020-07-20
 - Fixed nfc for ubuntu
 - Fixed database crashes and other optimizations
@@ -58,14 +56,14 @@ pip3 install --upgrade -r requirements.txt
 GUI package
 
 ```
-pip3 install --user pyqt5
+pip3 install pyqt5
 sudo apt-get install python3 pyqt5           # (prod) if pip3 doesn't work
 ```
 
 #### PyQt5 Dark Theme
 Dark Theme settings package (>= v1.0)
 ```
-pip3 install --user pyqt-darktheme
+pip3 install darktheme
 ```
 
 #### NFC
@@ -73,28 +71,26 @@ NFC reader package
 
 ##### windows
 ```
-pip3 install --user pyscard
+pip3 install pyscard
 pip3 install yongshi-pynfc
 ```
 
 ##### ubuntu
 ```
-sudo apt install swig # needed to install pyscard
-sudo apt install pcscd # needed to scan for readers on ubuntu
-sudo apt install -y python3-pyscard
+sudo apt install swig # may be needed to install pyscard
+sudo apt install pcscd # may be needed to scan for readers on ubuntu
+pip3 install pyscard
 
 # if you get errors (ARC nfc reader has this with ubuntu)
 sudo vim /etc/modprobe.d/blacklist-libnfc.conf
 # Add this line: blacklist pn533_usb
 # Reboot
 
-sudo apt install -y python3-pynfc
+pip3 install yongshi-pynfc
 ```
 
 #### WAM core
-```
-pip3 install WAM-Core
-```
+pip replaced with submodule under 'wamcore'
 
 ### Install build dependencies
 #### setuptools
@@ -117,7 +113,7 @@ pip3 install WAM-Core
 
 ### install
 ```
-pip3 install --user pyinstaller         # (dev) to create an installer for desktop OS like windows, ubuntu, ios
+pip3 install pyinstaller         # (dev) to create an installer for desktop OS like windows, ubuntu, ios
 ```
 
 ### Create distribution
@@ -132,9 +128,10 @@ appimage
 ```
 pyinstaller -F cli.py --name WAM-Ubuntu18-64-major-minor-patch-ext
 ```
+
 directory
 ```
-pyinstaller cli.py --name WAM-Ubuntu18-64-major-minor-patch-ext
+pyinstaller cli.py --name WAM-Ubuntu21-64-major-minor-patch-ext
 ```
 
 ### create a distribution from spec file with 
