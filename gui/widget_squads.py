@@ -190,38 +190,31 @@ class WidgetSquads(QWidget):
         name, okPressed = QInputDialog.getText(self, "Create", "Name your squad:")
         if okPressed and name:
             
-            # get all categories in references
-            wbrace = self.mainwindow.wbid.race
-            wbsource = self.mainwindow.wbid.source
-            wbwarband = self.mainwindow.wbid.warband
-            
-            datadict = load_reference("characters")
+            # get applicable characters to choose from
+            character_list = self.mainwindow.wbid.get_characters()
             categories = []
             
-            for key in datadict[wbrace][wbsource][wbwarband]:
-                if datadict[wbrace][wbsource][wbwarband][key]["ishero"] == False:
-                    categories.append(key)
+            for character in character_list:
+                if character.ishero == False:
+                    pk = character.database_id
+                    category = character.category
+                    charactertext = f"{pk}-{category}"
+                    categories.append(charactertext)
 
             category, okPressed = QInputDialog.getItem(self, "Create", "Choose a category", categories, 0, False)
             if okPressed and category:
-                new_squad = Squad.create_squad(
-                    name=name,
-                    race=wbrace,
-                    source=wbsource,
-                    warband=wbwarband,
-                    category=category,
-                )
+                # take the primary key from the chosen awnser and get the character object
+                pk = int(category.split('-', 1)[0])
+                new_squad = Squad.from_database(primarykey=pk, name=name)
+                new_squad.name = name
 
-                if new_squad.henchmanlist[0] != None:
+                wbidgold = self.mainwindow.wbid.treasury.gold
+                squadprice = new_squad.get_price() * new_squad.get_totalhenchman()
 
-                    wbidgold = self.mainwindow.wbid.treasury.gold
-                    squadprice = datadict[wbrace][wbsource][wbwarband][category]["price"]
-                    if wbidgold >= squadprice:
-                        self.mainwindow.wbid.treasury.gold = wbidgold - squadprice
-                        self.mainwindow.wbid.squadlist.append(new_squad)
-                        self.mainwindow.currentunit = new_squad.henchmanlist[0]
-                        self.mainwindow.initUI()
-                    else:
-                        QMessageBox.information(self, "Can't add squad!", "Lack of funds!", QMessageBox.Ok)
+                if wbidgold >= squadprice:
+                    self.mainwindow.wbid.treasury.gold = wbidgold - squadprice
+                    self.mainwindow.wbid.squadlist.append(new_squad)
+                    self.mainwindow.currentunit = new_squad.henchmanlist[0]
+                    self.mainwindow.initUI()
                 else:
-                    QMessageBox.information(self, "Can't add squad!", "Heroes can't be added to a squad!", QMessageBox.Ok)
+                    QMessageBox.information(self, "Can't add squad!", "Lack of funds!", QMessageBox.Ok)
