@@ -158,9 +158,9 @@ class WidgetSquads(QWidget):
             categories = []
             
             for character in character_list:
-                if character.ishero == False:
-                    pk = character.database_id
-                    category = character.category
+                if character.recorddict["ishero"] == 0:
+                    pk = character.primarykey
+                    category = character.recorddict["name"]
                     charactertext = f"{pk}-{category}"
                     categories.append(charactertext)
 

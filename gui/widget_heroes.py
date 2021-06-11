@@ -124,9 +124,10 @@ class WidgetHeroes(QWidget):
             categories = []
             
             for character in character_list:
-                if character.ishero == True:
-                    pk = character.database_id
-                    category = character.category
+                print(character.recorddict)
+                if character.recorddict["ishero"] == 1:
+                    pk = character.primarykey
+                    category = character.recorddict["name"]
                     charactertext = f"{pk}-{category}"
                     categories.append(charactertext)
 
