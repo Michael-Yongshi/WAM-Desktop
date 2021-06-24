@@ -50,14 +50,13 @@ class WarbandOverview(QMainWindow):
         self.wbid = Warband.create_template()
         self.currentunit = Character.create_template()
         self.currentthing = None
-        self.autosave = False
+        self.autosave = True
 
         self.initUI()
 
     def initUI(self):
 
         if self.autosave == True:
-            print(f"autosaved!")
             self.call_save_warband()
 
         # Some window settings
@@ -113,11 +112,27 @@ class WarbandOverview(QMainWindow):
         self.currentunit = None
         self.initUI
 
-    def call_save_warband(self):
-        print(f"Saving warband {self.wbid.name}")
-        datadict = self.wbid.to_dict()
-        save_warband(datadict)
-        QMessageBox.information(self, "Saved", "Save successful!", QMessageBox.Ok)
+    def call_save_warband(self, autosave=False, backup=False):
+
+        if self.wbid.name != "":
+
+            # collect warband info
+            name = self.wbid.name
+            datadict = self.wbid.to_dict()
+
+            if autosave == True:
+                filename = name+"backup"
+                save_warband(datadict=datadict, filename=filename, add_timestamp=True)
+                QMessageBox.information(self, "Saved", "Save successful!", QMessageBox.Ok)
+
+            elif backup == True:
+                filename = name+"autosave"
+                save_warband(datadict=datadict, filename=filename, add_timestamp=True)
+                QMessageBox.information(self, "Saved", "Save successful!", QMessageBox.Ok)
+
+            else:
+                save_warband(datadict=datadict)
+                QMessageBox.information(self, "Saved", "Save successful!", QMessageBox.Ok)
 
 def run():
     global app
