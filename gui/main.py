@@ -118,20 +118,18 @@ class WarbandOverview(QMainWindow):
 
             # collect warband info
             name = self.wbid.name
-            datadict = self.wbid.to_dict()
 
-            if autosave == True:
-                filename = name+"backup"
-                save_warband(datadict=datadict, filename=filename, add_timestamp=True)
-                QMessageBox.information(self, "Saved", "Save successful!", QMessageBox.Ok)
-
-            elif backup == True:
-                filename = name+"autosave"
-                save_warband(datadict=datadict, filename=filename, add_timestamp=True)
+            if autosave == True or backup == True:
+                if backup == True:
+                    filename = name+"backup"
+                
+                elif autosave == True:
+                    filename = name+"autosave"
+                save_warband(warband=self.wbid, filename=filename, add_timestamp=True)
                 QMessageBox.information(self, "Saved", "Save successful!", QMessageBox.Ok)
 
             else:
-                save_warband(datadict=datadict)
+                save_warband(warband=self.wbid)
                 QMessageBox.information(self, "Saved", "Save successful!", QMessageBox.Ok)
 
 def run():
