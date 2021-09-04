@@ -28,10 +28,6 @@ Individual Henchman release 1.10 (beta) - 2020-07-07
 - Added button for reading NFC and find character (will be changed to automatic later)
 
 ### Release 1.00
-Win10-64: https://www.jottacloud.com/s/130dc76091c06c94f73a7b79378122252f5
-
-Ubuntu18-64: https://www.jottacloud.com/s/13099be5dc95aae4139a0ca0328c19b71cf
-
 Hotfix for release 1.00 - 2020-06-14
 - Error handling for item creation to prevent crashes and added error message
 
@@ -121,7 +117,7 @@ pip3 install pyinstaller         # (dev) to create an installer for desktop OS l
 
 ### Create distribution
 #### Windows 10 (64bit)
-directory
+exe
 ```
 python3 -m PyInstaller -F cli.py --name WAM-Win10-64-major-minor-patch-ext --add-data "./wamcore/core/database/database.sqlite;./wamcore/core/database" --icon="gui\warhammer_icon.ico" 
 ```
