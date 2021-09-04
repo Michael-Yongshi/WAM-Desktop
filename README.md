@@ -123,25 +123,21 @@ pip3 install pyinstaller         # (dev) to create an installer for desktop OS l
 #### Windows 10 (64bit)
 directory
 ```
-python -m PyInstaller cli.py --icon="gui\warhammer_icon.ico" --name WAM-Win10-64-major-minor-patch-ext
+python3 -m PyInstaller -F cli.py --name WAM-Win10-64-major-minor-patch-ext --add-data "./wamcore/core/database/database.sqlite;./wamcore/core/database" --icon="gui\warhammer_icon.ico" 
 ```
 
 #### Ubuntu 21 (64bit)
 appimage
 ```
-python3 -m PyInstaller -F cli.py --name WAM-Ubuntu21-64-major-minor-patch-ext
+python3 -m PyInstaller -F cli.py --name WAM-Ubuntu21-64-major-minor-patch-ext --add-data "./wamcore/core/database/database.sqlite:./wamcore/core/database"
 ```
 
-directory
-```
-pyinstaller cli.py --name WAM-Ubuntu21-64-major-minor-patch-ext
-```
+remove the '-F' if you want a directory instead of a single file executable.
 
 ### create a distribution from spec file with 
-```
+<!-- ```
 python -m PyInstaller WAM.spec
-```
-<!-- python -m PyInstaller WAM_OF.spec -->
+``` -->
 
 
 ## Contributing
