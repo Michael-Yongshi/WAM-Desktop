@@ -79,13 +79,18 @@ pip3 install yongshi-pynfc
 ```
 sudo apt install swig # may be needed to install pyscard
 sudo apt install pcscd # may be needed to scan for readers on ubuntu
+sudo apt install libpcsclite-dev # may be needed for the winscard.h file that is in this dependency
 pip3 install pyscard
+```
 
+```
 # if you get errors (ARC nfc reader has this with ubuntu)
 sudo vim /etc/modprobe.d/blacklist-libnfc.conf
 # Add this line: blacklist pn533_usb
 # Reboot
+```
 
+```
 pip3 install yongshi-pynfc
 ```
 
