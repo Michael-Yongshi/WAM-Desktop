@@ -95,11 +95,9 @@ pip3 install yongshi-pynfc
 ```
 
 #### WAM core
-pip replaced with submodule under 'wamcore'
+pip package of WAM core replaced with submodule under 'wamcore'
 
 ### Install build dependencies
-#### setuptools
-#### twine
 
 ## Running the tests
 
@@ -128,10 +126,10 @@ directory
 python -m PyInstaller cli.py --icon="gui\warhammer_icon.ico" --name WAM-Win10-64-major-minor-patch-ext
 ```
 
-#### Ubuntu 18 (64bit)
+#### Ubuntu 21 (64bit)
 appimage
 ```
-pyinstaller -F cli.py --name WAM-Ubuntu18-64-major-minor-patch-ext
+python3 -m PyInstaller -F cli.py --name WAM-Ubuntu21-64-major-minor-patch-ext
 ```
 
 directory
