@@ -50,14 +50,12 @@ class WarbandOverview(QMainWindow):
         self.wbid = Warband.create_template()
         self.currentunit = Character.create_template()
         self.currentthing = None
-        self.autosave = True
 
         self.initUI()
 
     def initUI(self):
 
-        if self.autosave == True:
-            self.call_save_warband()
+        self.call_save_warband(autosave=True)
 
         # Some window settings
         self.setWindowTitle('Warhammer Army Manager')
@@ -124,13 +122,9 @@ class WarbandOverview(QMainWindow):
                     filename = name+"backup"
                 
                 elif autosave == True:
-                    filename = name+"autosave"
-                save_warband(warband=self.wbid, filename=filename, add_timestamp=True)
-                QMessageBox.information(self, "Saved", "Save successful!", QMessageBox.Ok)
+                    filename = name+"-autosave"
 
-            else:
-                save_warband(warband=self.wbid)
-                QMessageBox.information(self, "Saved", "Save successful!", QMessageBox.Ok)
+                save_warband(warband=self.wbid, filename=filename, add_timestamp=True)
 
 def run():
     global app

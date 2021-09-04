@@ -57,8 +57,8 @@ class WidgetSystem(QBorderedWidget):
         self.setLayout(sysbox)
 
     def call_save_warband(self):
-        datadict = self.mainwindow.wbid.to_dict()
-        save_warband(datadict)
+
+        save_warband(warband=self.mainwindow.wbid)
         QMessageBox.information(self, "Saved", "Save successful!", QMessageBox.Ok)
 
     def choose_warband(self):
