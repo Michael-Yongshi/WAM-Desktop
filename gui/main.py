@@ -1,10 +1,13 @@
 import sys
 
+from PyQt5.QtCore import (
+    QSettings
+    )
+
 from PyQt5.QtWidgets import (
     QApplication,
     QGridLayout,
     QMainWindow,
-    QMessageBox,
     QSizePolicy,
     )
 
@@ -33,9 +36,10 @@ from gui.widget_current import WidgetCurrent
 
 class QMainApplication(QApplication):
     """A Dark styled application."""
+
     def __init__(self, *__args):
         super().__init__(*__args)
-        
+
         QFontDatabase.addApplicationFont("source/schoensperger.otf")
         self.setStyle("Fusion")
         self.setPalette(DarkPalette())
@@ -47,25 +51,41 @@ class WarbandOverview(QMainWindow):
     """The main window that everything runs in"""
     def __init__(self):
         super().__init__()
+
+        # Some window settings
+        self.setWindowTitle('Warhammer Army Manager')
+        self.setWindowIcon(QIcon('war_72R_icon.ico'))  
+
+        # create empty settings of the main window
+        self.settings = QSettings("Michael-Yongshi", "WAM-Desktop")
+
+        # store persistent variables
         self.wbid = Warband.create_template()
         self.currentunit = Character.create_template()
         self.currentthing = None
+
+        # store nested widgets
+        self.nested_widget = self.set_nested_widget()
 
         self.initUI()
 
     def initUI(self):
 
-        self.call_save_warband(autosave=True)
+        # save window settings (size and position)
+        self.settings.setValue("geometry", self.saveGeometry())
+        self.settings.setValue("windowState", self.saveState())
 
-        # Some window settings
-        self.setWindowTitle('Warhammer Army Manager')
-        self.setWindowIcon(QIcon('war_72R_icon.ico'))     
+        # autosave
+        self.call_save_warband(autosave=True)   
 
-        # build overview
-        nested_widget = self.set_nested_widget()
+        # update nested widget
+        self.nested_widget = self.set_nested_widget()
+        self.setCentralWidget(self.nested_widget)
 
-        self.setCentralWidget(nested_widget)
-        self.showMaximized()
+        # Restore window settings (size and position)
+        self.restoreGeometry(self.settings.value("geometry", bytes("", "utf-8")))
+        self.restoreState(self.settings.value("windowState", bytes("", "utf-8")))
+        self.show()
 
     def set_nested_widget(self):
 
