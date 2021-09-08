@@ -404,7 +404,7 @@ class WidgetCurrent(QRaisedFrame):
                         elif okPressed and choice == "Magic":
                             new_magic = WidgetMagic.dialog_new_magic(self.mainwindow)
                             result = currentunit.set_event_magic(event, new_magic)
-                                           
+
                     elif roll1 == 7:
                         items = ["Weapon Skill", "Ballistic Skill"]
                         choice, okPressed = QInputDialog.getItem(self, "Choose weapon skill or Ballistic skill", "Choose if you would prefer to add 1 to your weapon skill or to your ballistic skill", items, 0, False)
@@ -438,6 +438,10 @@ class WidgetCurrent(QRaisedFrame):
                     Squadalive = True
                     if roll1 >= 10 and roll1 <= 12:
 
+                        result = f"Character {currentunit.name} of your squad {currentsquad.name} proved himself beyond his peers and became a hero!"
+                        message = QMessageBox.information(self, f"This lads got talent!", result, QMessageBox.Ok)
+
+                        # processing henchman to hero
                         currentunit.ishero = True
                         self.mainwindow.wbid.herolist += [currentunit]
                         currentunit.eventlist.append(Event.create_event(
@@ -448,21 +452,19 @@ class WidgetCurrent(QRaisedFrame):
                         index = currentsquad.henchmanlist.index(currentunit)
                         currentsquad.henchmanlist.pop(index)
 
-                        result = f"Character {currentunit.name} of your squad {currentsquad.name} proved himself beyond his peers and became a hero!"
-                        message = QMessageBox.information(self, f"This lads got talent!", result, QMessageBox.Ok)
-
+                        # determine if the squad will be deleted
                         if currentsquad.get_totalhenchman() == 0:
-                            index = self.mainwindow.wbid.squadlist.index(currentsquad)
-                            self.mainwindow.wbid.squadlist.pop(index)
                             Squadalive = False
 
-                        self.mainwindow.initUI()
+                            # processing deletion of squad
+                            index = self.mainwindow.wbid.squadlist.index(currentsquad)
+                            self.mainwindow.wbid.squadlist.pop(index)
 
                         # Trow roll1 (2D6)
                         if Squadalive == True:
-                            roll1, okPressed = QInputDialog.getInt(self, "Roll 2D6 for advance", process, 2, 2, 9, 1)
+                            roll1, okPressed = QInputDialog.getInt(self, "Roll again 2D6 for the squad's advance. This time reroll if another 10 - 12 is rolled.", process, 2, 2, 9, 1)
 
-                    if Squadalive == True:
+                    if Squadalive == True and okPressed and roll1:
                         for henchman in currentsquad.henchmanlist:
 
                             # get first advance event of the henchman
@@ -497,7 +499,7 @@ class WidgetCurrent(QRaisedFrame):
                     else:
                         message = QMessageBox.information(self, f"Squad disbanded!", f"Squad {currentsquad.name} lost all its henchmen!", QMessageBox.Ok)
                 else:
-                    print("advancement canceled")
+                    message = QMessageBox.information(self, f"Canceled!", "Advancement canceled", QMessageBox.Ok)
 
                 self.mainwindow.initUI()
 
