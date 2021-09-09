@@ -67,20 +67,28 @@ class WidgetItemsWarband(QBorderlessFrame):
 
         def remove():
 
-            remove = QMessageBox.question(self, 'Remove item', f"Do you want to remove this item?", QMessageBox.Yes | QMessageBox.No)
-            if remove == QMessageBox.Yes:
-                process_gold = QMessageBox.question(self, "Process gold", "Do you want to process an exchange for gold?", QMessageBox.Yes | QMessageBox.No)
-                itemprice = 0
+            choose = ("Undo","Sell","Loss")
+            choice, okPressed = QInputDialog.getItem(self, "Item action","What needs to happen to this item?", choose, 0, False)
+            if okPressed and choice:
 
                 for i in warband.itemlist:
                     if i is item:
-                        if process_gold == QMessageBox.Yes:
+
+                        # check if a complete refund is necessary
+                        itemprice = 0
+                        if choice == "Undo":
                             itemprice += item.price
+                        # check if half a refund is necessary
+                        elif choice == "Sell":
+                            itemprice += (item.price / 2)
+                        # add the amount to the warbands treasury
+                        self.mainwindow.wbid.treasury.gold += itemprice
+
+                        # removing the item
                         index = warband.itemlist.index(item)
                         warband.itemlist.pop(index)
                         break
 
-                self.mainwindow.wbid.treasury.gold += itemprice
                 self.mainwindow.initUI()
         
         return remove
@@ -148,17 +156,58 @@ class WidgetItemsUnit(QBorderlessFrame):
 
         def remove():
 
-            remove = QMessageBox.question(self, 'Remove item', f"Do you want to remove this item?", QMessageBox.Yes | QMessageBox.No)
-            if remove == QMessageBox.Yes:
+            choose = ("Undo","Sell","Loss")
+            choice, okPressed = QInputDialog.getItem(self, "Item action","What needs to happen to this item?", choose, 0, False)
+            if okPressed and choice:
 
                 if unit.ishero == True:
-                    unit.sell_item(self.mainwindow.wbid, item.subcategory)
+
+                    for i in unit.itemlist:
+                        if i is item:
+
+                            # check if a complete refund is necessary
+                            itemprice = 0
+                            if choice == "Undo":
+                                itemprice += item.price
+                            # check if half a refund is necessary
+                            elif choice == "Sell":
+                                itemprice += (item.price / 2)
+                            # add the amount to the warbands treasury
+                            self.mainwindow.wbid.treasury.gold += itemprice
+
+                            # removing the item
+                            index = unit.itemlist.index(item)
+                            unit.itemlist.pop(index)
+                            break
 
                 elif unit.ishero == False:
+
                     for squad in self.mainwindow.wbid.squadlist:
                         if unit is squad.henchmanlist[0]:
-                            squad.sell_item(self.mainwindow.wbid, item.subcategory)
-                            break
+                            # this squad is the current unit part of
+
+                            for henchman in squad.henchmanlist:
+                                # do for all squad henchmen
+
+                                for i in henchman.itemlist:
+                                    # find all items with the same name
+
+                                    if i.subcategory == item.subcategory:
+
+                                        # check if a complete refund is necessary
+                                        itemprice = 0
+                                        if choice == "Undo":
+                                            itemprice += item.price
+                                        # check if half a refund is necessary
+                                        elif choice == "Sell":
+                                            itemprice += (item.price / 2)
+                                        # add the amount to the warbands treasury
+                                        self.mainwindow.wbid.treasury.gold += itemprice
+
+                                        # removing the item
+                                        index = henchman.itemlist.index(item)
+                                        henchman.itemlist.pop(index)
+                                        break
 
                 self.mainwindow.initUI()
         
