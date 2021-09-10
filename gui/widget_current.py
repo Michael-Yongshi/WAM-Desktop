@@ -464,40 +464,43 @@ class WidgetCurrent(QRaisedFrame):
                         if Squadalive == True:
                             roll1, okPressed = QInputDialog.getInt(self, "Roll again 2D6 for the squad's advance. This time reroll if another 10 - 12 is rolled.", process, 2, 2, 9, 1)
 
-                    if Squadalive == True and okPressed and roll1:
-                        for henchman in currentsquad.henchmanlist:
+                    if okPressed and roll1:
+                        if Squadalive == True:
+                            for henchman in currentsquad.henchmanlist:
 
-                            # get first advance event of the henchman
-                            event = henchman.get_tbd_advance_events()[0]
+                                # get first advance event of the henchman
+                                event = henchman.get_tbd_advance_events()[0]
 
-                            if roll1 >= 6 and roll1 <= 7:
-                                items = ["Weapon Skill", "Ballistic Skill"]
-                                choice, okPressed = QInputDialog.getItem(self, "Choose weapon skill or Ballistic skill", "Choose if you would prefer to add 1 to your weapon skill or to your ballistic skill", items, 0, False)
-                                if okPressed and choice:
-                                    result = henchman.set_event_roll7(event, choice)
+                                if roll1 >= 6 and roll1 <= 7:
+                                    items = ["Weapon Skill", "Ballistic Skill"]
+                                    choice, okPressed = QInputDialog.getItem(self, "Choose weapon skill or Ballistic skill", "Choose if you would prefer to add 1 to your weapon skill or to your ballistic skill", items, 0, False)
+                                    if okPressed and choice:
+                                        result = henchman.set_event_roll7(event, choice)
 
-                            else:
-                                if roll1 >= 2 and roll1 <= 4:
-                                    characteristics = "initiative"
-                                    changeroll1 = 8
-                                    changeroll2 = 1
-                                elif roll1 == 5:
-                                    characteristics = "strength"
-                                    changeroll1 = 6
-                                    changeroll2 = 1
-                                elif roll1 == 8:
-                                    characteristics = "attack"
-                                    changeroll1 = 6
-                                    changeroll2 = 6
-                                elif roll1 == 9:
-                                    characteristics = "leadership"
-                                    changeroll1 = 8
-                                    changeroll2 = 6
-                                result = henchman.set_event_characteristic(event, changeroll1, changeroll2)
+                                else:
+                                    if roll1 >= 2 and roll1 <= 4:
+                                        characteristics = "initiative"
+                                        changeroll1 = 8
+                                        changeroll2 = 1
+                                    elif roll1 == 5:
+                                        characteristics = "strength"
+                                        changeroll1 = 6
+                                        changeroll2 = 1
+                                    elif roll1 == 8:
+                                        characteristics = "attack"
+                                        changeroll1 = 6
+                                        changeroll2 = 6
+                                    elif roll1 == 9:
+                                        characteristics = "leadership"
+                                        changeroll1 = 8
+                                        changeroll2 = 6
+                                    result = henchman.set_event_characteristic(event, changeroll1, changeroll2)
 
-                        message = QMessageBox.information(self, f"Character gained {event.category}!", result, QMessageBox.Ok)
+                            message = QMessageBox.information(self, f"Character gained {event.category}!", result, QMessageBox.Ok)
+                        else:
+                            message = QMessageBox.information(self, f"Squad disbanded!", f"Squad {currentsquad.name} lost all its henchmen!", QMessageBox.Ok)
                     else:
-                        message = QMessageBox.information(self, f"Squad disbanded!", f"Squad {currentsquad.name} lost all its henchmen!", QMessageBox.Ok)
+                        message = QMessageBox.information(self, f"Canceled!", "Advancement canceled", QMessageBox.Ok)
                 else:
                     message = QMessageBox.information(self, f"Canceled!", "Advancement canceled", QMessageBox.Ok)
 
