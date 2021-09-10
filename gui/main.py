@@ -25,7 +25,10 @@ from wamcore.core.class_hierarchy import (
     Character,
     )
 
-from darktheme.widget_template import *
+from darktheme.widget_template import (
+    DarkApplication,
+    QBorderlessFrame,
+)
 
 from gui.widget_warband import WidgetWarband
 from gui.widget_system import WidgetSystem
@@ -34,18 +37,13 @@ from gui.widget_squads import WidgetSquads
 from gui.widget_current import WidgetCurrent
 
 
-class QMainApplication(QApplication):
+class Application(DarkApplication):
     """A Dark styled application."""
 
     def __init__(self, *__args):
         super().__init__(*__args)
 
-        QFontDatabase.addApplicationFont("source/schoensperger.otf")
-        self.setStyle("Fusion")
-        self.setPalette(DarkPalette())
-        # self.setFont(QFont("schoensperger", 20))
-        self.setStyleSheet("QToolTip { color: #ffffff; background-color: grey; border: 1px solid white; }")
-    
+        QFontDatabase.addApplicationFont("source/schoensperger.otf")   
 
 class WarbandOverview(QMainWindow):
     """The main window that everything runs in"""
@@ -148,7 +146,7 @@ class WarbandOverview(QMainWindow):
 
 def run():
     global app
-    app = QMainApplication(sys.argv)
+    app = Application(sys.argv)
     global main
     main = WarbandOverview()
     sys.exit(app.exec_())
