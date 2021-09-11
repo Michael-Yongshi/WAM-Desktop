@@ -26,7 +26,7 @@ from wamcore.core.class_hierarchy import (
     )
 
 from darktheme.widget_template import (
-    DarkApplication,
+    DarkPalette,
     QBorderlessFrame,
 )
 
@@ -37,12 +37,13 @@ from gui.widget_squads import WidgetSquads
 from gui.widget_current import WidgetCurrent
 
 
-class Application(DarkApplication):
+class Application(QApplication):
     """A Dark styled application."""
 
     def __init__(self, *__args):
         super().__init__(*__args)
 
+        self.setPalette(DarkPalette())
         QFontDatabase.addApplicationFont("source/schoensperger.otf")   
 
 class WarbandOverview(QMainWindow):
