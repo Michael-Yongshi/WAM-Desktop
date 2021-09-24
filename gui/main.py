@@ -5,8 +5,11 @@ from PyQt5.QtCore import (
     )
 
 from PyQt5.QtWidgets import (
+    QAction,
     QApplication,
     QGridLayout,
+    QInputDialog,
+    QMessageBox,
     QMainWindow,
     QSizePolicy,
     )
@@ -18,6 +21,9 @@ from PyQt5.QtGui import (
 
 from wamcore.core.methods_engine import (
     save_warband,
+    load_warband,
+    show_warbands,
+    load_reference,
     )
 
 from wamcore.core.class_hierarchy import (
@@ -63,6 +69,42 @@ class WarbandOverview(QMainWindow):
         self.currentunit = Character.create_template()
         self.currentthing = None
 
+        # set menu bar
+        bar = self.menuBar()
+
+        file_menu = bar.addMenu('File')
+        create_action = QAction('Create', self)
+        create_action.setToolTip('Create a new <b>Warband</b>')
+        create_action.triggered.connect(self.create_warband)
+        open_action = QAction('Open', self)
+        open_action.setToolTip('Choose an existing <b>Warband</b>')
+        open_action.triggered.connect(self.choose_warband)
+        save_action = QAction('Save', self)
+        save_action.setShortcut("Ctrl+S")
+        save_action.setToolTip('Save current <b>Warband</b>')
+        save_action.triggered.connect(self.save_warband)
+        close_action = QAction('Close', self)
+        close_action.setToolTip('Close <b>Warband</b>')
+        # close_action.triggered.connect(self.close_warband)
+        quit_action = QAction('Quit', self)
+        quit_action.setToolTip('Quit')
+        quit_action.triggered.connect(QApplication.instance().quit)
+        file_menu.addAction(create_action)
+        file_menu.addAction(open_action)
+        file_menu.addAction(save_action)
+        file_menu.addAction(close_action)
+        file_menu.addAction(quit_action)
+
+        edit_menu = bar.addMenu('Edit')
+        undo_action = QAction('Undo', self)
+        redo_action = QAction('Redo', self)
+        edit_menu.addAction(undo_action)
+        edit_menu.addAction(redo_action)
+
+        lexi_menu = bar.addMenu('Lexicon')
+        fight_action = QAction('Fights', self)
+        lexi_menu.addAction(fight_action)
+
         # store nested widgets
         self.nested_widget = self.set_nested_widget()
 
@@ -75,7 +117,7 @@ class WarbandOverview(QMainWindow):
         self.settings.setValue("windowState", self.saveState())
 
         # autosave
-        self.call_save_warband(autosave=True)   
+        self.save_warband(autosave=True)   
 
         # update nested widget
         self.nested_widget = self.set_nested_widget()
@@ -103,7 +145,7 @@ class WarbandOverview(QMainWindow):
         # top wrapping warband and system in the top horizontal layout
         topbox = QGridLayout()
         topbox.addWidget(WidgetWarband(self), 0, 0, 1, 4)
-        topbox.addWidget(WidgetSystem(self), 0, 4, 1, 1)
+        # topbox.addWidget(WidgetSystem(self), 0, 4, 1, 1)
 
         topboxframe = QBorderlessFrame()
         topboxframe.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
@@ -129,7 +171,69 @@ class WarbandOverview(QMainWindow):
         self.currentunit = None
         self.initUI
 
-    def call_save_warband(self, autosave=False, backup=False):
+    def create_warband(self):
+        """Create a new warband and store it in cache"""
+        name, okPressed = QInputDialog.getText(self, "Create", "Name your warband:")
+        if okPressed and name:
+            
+            # get all warbands from the database
+            wbtable = load_reference("warbands")
+            if wbtable == None:
+                QMessageBox(self, f"Error", f"Could not load database files")
+                return
+
+            # create a list of choices
+            warbands = []
+            for record in wbtable:
+                pk = record.primarykey
+                race = record.recorddict["race"]
+                source = record.recorddict["source"]
+                base = record.recorddict["base"]
+                warbandtext = f"{pk}-{race}-{source}-{base}"
+
+                warbands += [warbandtext]
+            
+            # let user choose from the list
+            warband, okPressed = QInputDialog.getItem(self, "Create", "Choose a warband", warbands, 0, False)
+            if okPressed and warband:
+                
+                # take the primary key from the chosen awnser and get the python object
+                pk = int(warband.split('-', 1)[0])
+                warband_object = Warband.from_database(primarykey=pk)
+                warband_object.name = name
+
+                # Load warband object to main window
+                self.wbid = warband_object
+
+                # set an empty character as currentunit
+                self.currentunit = Character.create_template()
+                
+                # restart ui to force changes
+                self.initUI()
+
+    def choose_warband(self):
+        """Choose a warband to be loaded into cache and then shown on screen"""
+        
+        # get list of save files
+        warbands = show_warbands()
+
+        # Let user choose out of save files
+        wbname, okPressed = QInputDialog.getItem(self, "Choose", "Choose your warband", warbands, 0, False)
+        if okPressed and wbname:
+            # Load warband dictionary 
+            wbdict = load_warband(wbname)
+            # convert warband dict to object
+            wbobj = Warband.from_dict(wbdict)
+            # set chosen warband as object in main window
+            self.wbid = wbobj
+
+            # set empty current unit to main window
+            self.currentunit = Character.create_template()
+
+            # Restart the main window to force changes
+            self.initUI() 
+
+    def save_warband(self, autosave=False, backup=False, popup=False):
 
         if self.wbid.name != "":
 
@@ -142,8 +246,11 @@ class WarbandOverview(QMainWindow):
                 
                 elif autosave == True:
                     filename = name+"-autosave"
-
+                
                 save_warband(warband=self.wbid, filename=filename, add_timestamp=True)
+            else:
+                save_warband(warband=self.wbid)
+                QMessageBox.information(self, "Saved", "Save successful!", QMessageBox.Ok)
 
 def run():
     global app
