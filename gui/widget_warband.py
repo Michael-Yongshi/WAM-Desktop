@@ -16,7 +16,7 @@ from darktheme.widget_template import *
 from gui.widget_items import WidgetItemsWarband
 
 class WidgetWarband(QRaisedFrame):
-    def __init__(self, mainwindow, configfile = {}):
+    def __init__(self, mainwindow):
         super().__init__()
 
         self.mainwindow = mainwindow
@@ -28,40 +28,43 @@ class WidgetWarband(QRaisedFrame):
                 'wbsrclabel': {'row': 2, 'column': 0, 'width': 1, 'height': 1, 'text': f"Source: <b>{self.mainwindow.wbid.source}</b>", 'tooltip': "Source", 'connect': "",},
                 'wbtypelabel': {'row': 3, 'column': 0, 'width': 1, 'height': 1, 'text': f"Type: <b>{self.mainwindow.wbid.warband}</b>", 'tooltip': "Type", 'connect': "",},
                 'goldlabel': {'row': 0, 'column': 1, 'width': 1, 'height': 1, 'text': f"Gold: <b>{self.mainwindow.wbid.treasury.gold}</b>", 'tooltip': "This is the amount of gold your warband holds.", 'connect': self.dialog_gold,},
-                'wyrdlabel': {'row': 2, 'column': 1, 'width': 1, 'height': 1, 'text': f"Wyrdstone: <b>{self.mainwindow.wbid.treasury.wyrd}</b>", 'tooltip': "This is the amount of wyrdstone (equivalent) your warband holds.", 'connect': self.dialog_wyrd,},
-                'rules': {'row': 4, 'column': 0, 'width': 1, 'height': 1, 'text': f"<font>Rules</font>", 'tooltip': f"{self.mainwindow.wbid.get_rulelist()}", 'connect': "",},
-                'description': {'row': 4, 'column': 1, 'width': 1, 'height': 1, 'text': f"<font>Description</font>", 'tooltip': f"{self.mainwindow.wbid.description}", 'connect': self.dialog_desc,},
+                'wyrdlabel': {'row': 1, 'column': 1, 'width': 1, 'height': 1, 'text': f"Wyrdstone: <b>{self.mainwindow.wbid.treasury.wyrd}</b>", 'tooltip': "This is the amount of wyrdstone (equivalent) your warband holds.", 'connect': self.dialog_wyrd,},
+                'description': {'row': 2, 'column': 1, 'width': 1, 'height': 3, 'text': f"<font>Description</font>", 'tooltip': f"{self.mainwindow.wbid.description}", 'connect': self.dialog_desc,},
+                'rules': {'row': 0, 'column': 2, 'width': 1, 'height': 5, 'text': f"<font>Rules</font>", 'tooltip': f"{self.mainwindow.wbid.get_rulelist()}", 'connect': "",},
+                'items': {'row': 0, 'column': 3, 'width': 1, 'height': 5, 'tooltip': f"items", 'connect': "",},
                 },
             },
-            'wbitembox': {'row': 0, 'column': 1, 'width': 1, 'height': 1,},
         }
 
         wbbox = QGridLayout()
 
-        config =self.configfile['wbdetail']
+        config = self.configfile['wbdetail']
         wbbox.addWidget(self.set_detailbox(), config['row'], config['column'], config['width'], config['height'])
-        
-        config =self.configfile['wbitembox']
-        wbbox.addWidget(WidgetItemsWarband(self.mainwindow), config['row'], config['column'], config['width'], config['height'])
 
         self.setToolTip("Here you can explore details about your warband")
         self.setLayout(wbbox)
 
     def set_detailbox(self):
-        
+
         wbdetail = QGridLayout()
 
         config = self.configfile['wbdetail']
         children = config['children']
-        
+
         for key in children:
             config = children[key]
-            label = QClickLabel()
-            label.setText(config['text'])
+            
+            if key == 'items':
+                label = WidgetItemsWarband(self.mainwindow)
+                wbdetail.addWidget(label, config['row'], config['column'], config['width'], config['height'])
+            else:
+                label = QClickLabel()
+                label.setText(config['text'])
+                wbdetail.addWidget(label, config['row'], config['column'], config['width'], config['height'])
+
             label.setToolTip(config['tooltip'])
             if config['connect'] != "":
                 label.clicked.connect(config['connect'])
-            wbdetail.addWidget(label, config['row'], config['column'], config['width'], config['height'])
 
         wbdetailframe = QBorderlessFrame()
         wbdetailframe.setLayout(wbdetail)
@@ -88,7 +91,7 @@ class WidgetWarband(QRaisedFrame):
     
     def dialog_name(self):
 
-        newname, okPressed = QInputDialog.getText(self, 'Name change', f"Change name to:", text=self.mainwindow.wbid.name)
+        newname, okPressed = QInputDialog.getText(self, 'Name change', f"Change name to:", text= self.mainwindow.wbid.name)
         if okPressed and newname:
             self.mainwindow.wbid.name = newname
 
