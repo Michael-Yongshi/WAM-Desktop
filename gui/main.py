@@ -241,16 +241,21 @@ class WarbandOverview(QMainWindow):
             name = self.wbid.name
 
             if autosave == True or backup == True:
+                add_timestamp = True
                 if backup == True:
                     filename = name+"backup"
                 
                 elif autosave == True:
                     filename = name+"-autosave"
-                
-                save_warband(warband=self.wbid, filename=filename, add_timestamp=True)
+
             else:
-                save_warband(warband=self.wbid)
-                QMessageBox.information(self, "Saved", "Save successful!", QMessageBox.Ok)
+                filename = name
+                add_timestamp = False
+
+            try:
+                save_warband(warband=self.wbid, filename=filename, add_timestamp=add_timestamp)
+            except:
+                QMessageBox.critical(self, "Error", "Save Failed!", QMessageBox.Ok)
 
 def run():
     global app
