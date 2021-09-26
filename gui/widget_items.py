@@ -134,15 +134,7 @@ class WidgetItemsUnit(QBorderlessFrame):
         def new():
             new_item = dialog_choose_item(self)
             if new_item != "Cancel":
-                if unit.ishero == True:
-                    message = unit.buy_item(self.mainwindow.wbid, new_item)
-
-                elif unit.ishero == False:
-                    for squad in self.mainwindow.wbid.squadlist:
-                        for henchman in squad.henchmanlist:
-                            if unit is henchman:
-                                message = squad.buy_item(self.mainwindow.wbid, new_item)
-                                break
+                message = unit.buy_item(self.mainwindow.wbid, new_item)
                 
                 if message == "Lack of funds!":
                     message = QMessageBox.information(self, 'Lack of funds!', "Can't add new item, lack of funds", QMessageBox.Ok)
@@ -160,54 +152,14 @@ class WidgetItemsUnit(QBorderlessFrame):
             choice, okPressed = QInputDialog.getItem(self, "Item action","What needs to happen to this item?", choose, 0, False)
             if okPressed and choice:
 
-                if unit.ishero == True:
-
-                    for i in unit.itemlist:
-                        if i is item:
-
-                            # check if a complete refund is necessary
-                            itemprice = 0
-                            if choice == "Undo":
-                                itemprice += item.price
-                            # check if half a refund is necessary
-                            elif choice == "Sell":
-                                itemprice += (item.price / 2)
-                            # add the amount to the warbands treasury
-                            self.mainwindow.wbid.treasury.gold += itemprice
-
-                            # removing the item
-                            index = unit.itemlist.index(item)
-                            unit.itemlist.pop(index)
-                            break
-
-                elif unit.ishero == False:
-
-                    for squad in self.mainwindow.wbid.squadlist:
-                        if unit is squad.henchmanlist[0]:
-                            # this squad is the current unit part of
-
-                            for henchman in squad.henchmanlist:
-                                # do for all squad henchmen
-
-                                for i in henchman.itemlist:
-                                    # find all items with the same name
-
-                                    if i.subcategory == item.subcategory:
-
-                                        # check if a complete refund is necessary
-                                        itemprice = 0
-                                        if choice == "Undo":
-                                            itemprice += item.price
-                                        # check if half a refund is necessary
-                                        elif choice == "Sell":
-                                            itemprice += (item.price / 2)
-                                        # add the amount to the warbands treasury
-                                        self.mainwindow.wbid.treasury.gold += itemprice
-
-                                        # removing the item
-                                        index = henchman.itemlist.index(item)
-                                        henchman.itemlist.pop(index)
-                                        break
+                # check if a complete refund is necessary
+                if choice == "Undo":
+                    unit.undo_item(wbid=self.mainwindow.wbid, item=item)
+                # check if half a refund is necessary
+                elif choice == "Sell":
+                    unit.sell_item(wbid=self.mainwindow.wbid, item=item)
+                else:
+                    unit.remove_item(item=item)
 
                 self.mainwindow.initUI()
         

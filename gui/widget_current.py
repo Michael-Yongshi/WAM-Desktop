@@ -95,14 +95,14 @@ class WidgetCurrent(QRaisedFrame):
     def set_henchman_box(self):
 
         currentbox = QVBoxLayout()
-        currentsquad = None
+        currentsquad = self.mainwindow.currentunit.squad
 
-        for squad in self.mainwindow.wbid.squadlist:
-            for henchman in squad.henchmanlist:
-                if self.mainwindow.currentunit is henchman:
-                    currentsquad = squad
-                    break
-                    break
+        # for squad in self.mainwindow.wbid.squadlist:
+        #     for henchman in squad.henchmanlist:
+        #         if self.mainwindow.currentunit is henchman:
+        #             currentsquad = squad
+        #             break
+        #             break
 
         if currentsquad != None:
             tabs = QTabWidget()
@@ -146,7 +146,6 @@ class WidgetCurrent(QRaisedFrame):
                     tabs.setCurrentIndex(lenght - 1)
             
             tabs.addTab(QWidget(), f"+")
-
             tabs.currentChanged.connect(self.onclick)
             
             buttonwidget = self.set_buttonwidget()
@@ -158,26 +157,28 @@ class WidgetCurrent(QRaisedFrame):
 
     def onclick(self, signal):
         
-        for squad in self.mainwindow.wbid.squadlist:
-            for henchman in squad.henchmanlist:
-                #just check if currentunit is part of this squad, doesnt matter which specific henchman it is, just which squad it is part of.
-                if henchman is self.mainwindow.currentunit:
-                    length = squad.henchmanlist.__len__()
-                    
-                    if signal == length and henchman.get_price() < self.mainwindow.wbid.treasury.gold:
-                        # if signal is equal to length of henchman than the last tab has been selected to add a new unit
-                        self.mainwindow.wbid.treasury.gold -= henchman.get_price()
-                        squad.add_new_henchman()
-
-                    elif signal == length and henchman.get_price() > self.mainwindow.wbid.treasury.gold:
-                        # not enough money to add unit
-                        message = QMessageBox.information(self, f"Not enough funds!", f"Current gold is {self.mainwindow.wbid.treasury.gold}, but {henchman.get_price()} is needed.", QMessageBox.Ok)
-                        break
-
-                    # set currentunit to this squads selected henchman based on the onclick signal if a character is selected
-                    self.mainwindow.currentunit = squad.henchmanlist[signal]
-                    break
+        # get current squad and first henchman as a reference
+        squad = self.mainwindow.currentunit.squad
+        henchman1 = squad.henchmanlist[0]
+        length = squad.henchmanlist.__len__()
         
+        if signal == length:
+            # if signal (clicked tab index, starts at 1) is equal to the length of henchmanlist (starts at 0) than the last tab has been selected ('+' that is there to signal add a new unit)
+
+            # check if there is enough money to buy a new unit
+            if henchman1.get_price() <= self.mainwindow.wbid.treasury.gold:
+
+                # process cost and add unit
+                self.mainwindow.wbid.treasury.gold -= henchman1.get_price()
+                squad.add_new_henchman()
+
+            else:
+                # not enough money to add unit
+                message = QMessageBox.information(self, f"Not enough funds!", f"Current gold is {self.mainwindow.wbid.treasury.gold}, but {henchman1.get_price()} is needed.", QMessageBox.Ok)
+        
+        # set focus on the clicked unit / tab
+        self.mainwindow.currentunit = squad.henchmanlist[signal]
+
         self.mainwindow.initUI()
 
     def set_buttonwidget(self):
@@ -544,25 +545,34 @@ class WidgetCurrent(QRaisedFrame):
             self.remove_unit()
 
     def remove_unit(self):
+        
+        #TODO: removing units should be mainly handled by wam-core
 
-        if self.mainwindow.currentunit.ishero == True:
-            index = self.mainwindow.wbid.herolist.index(self.mainwindow.currentunit)
+        unit = self.mainwindow.currentunit
+
+        if unit.ishero == True:
+
+            index = self.mainwindow.wbid.herolist.index(unit)
             self.mainwindow.wbid.herolist.pop(index)
             self.mainwindow.currentunit = Character.create_template()
 
-        elif self.mainwindow.currentunit.ishero == False:
-            # get squad
-            for squad in self.mainwindow.wbid.squadlist:
-                for henchman in squad.henchmanlist:
-                    if self.mainwindow.currentunit is henchman:
-                        index = squad.henchmanlist.index(henchman)
-                        squad.henchmanlist.pop(index)
+        elif unit.ishero == False:
+            
+            squad = unit.squad
+            index = squad.henchmanlist.index(unit)
+            squad.henchmanlist.pop(index)
 
-                        try:
-                            self.mainwindow.currentunit = squad.henchmanlist[0]
-                        except:
-                            index = self.mainwindow.wbid.squadlist.index(squad)
-                            self.mainwindow.wbid.squadlist.pop(index)
-                            self.mainwindow.currentunit = Character.create_template()
+            # check if it was the last henchman
+            if squad.get_totalhenchman() != 0:
+                # select first henchman in the squad
+                self.mainwindow.currentunit = squad.henchmanlist[0]
+
+            else:
+                # remove the squad from the warband
+                index = self.mainwindow.wbid.squadlist.index(squad)
+                self.mainwindow.wbid.squadlist.pop(index)
+
+                # remove focus
+                self.mainwindow.currentunit = Character.create_template()
 
         self.mainwindow.initUI()

@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import (
     )
 
 from wamcore.core.class_hierarchy import (
-    Hero,
+    Character,
     )
 
 from darktheme.widget_template import *
@@ -135,7 +135,7 @@ class WidgetHeroes(QWidget):
             if okPressed and category:
                 # take the primary key from the chosen awnser and get the character object
                 pk = int(category.split('-', 1)[0])
-                new_hero = Hero.from_database(primarykey=pk)
+                new_hero = Character.create_hero(primarykey=pk)
                 new_hero.name = name
 
                 # add hero to warband and deduct from gold
