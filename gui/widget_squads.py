@@ -76,9 +76,13 @@ class WidgetSquads(QWidget):
         self.setLayout(squadbox)
 
     def create_method_focus(self, squad):          
-        """This method is used in order to create a new method that holds a reference to a passed attribute,
-        this is used when a widget needs to be clickable but the signal needs to carry information other than the signal itself.
-        This one specifically gets a current unit and then passes it to the currentunit attribute of the main window"""
+        """
+        A create method is used in order to create a new method that holds a reference to a passed attribute,
+        in this application this is used when a widget needs to be clickable but the signal needs to carry information other than the signal itself
+        (a variable that signifies what is clicked on when the value is dynamic)
+
+        This one specifically gets a current unit and then passes it to the currentunit attribute of the main window
+        """
         
         def focus_unit():
             
@@ -156,7 +160,7 @@ class WidgetSquads(QWidget):
             # get applicable characters to choose from
             character_list = self.mainwindow.wbid.get_characters()
             categories = []
-            
+
             for character in character_list:
                 if character.recorddict["ishero"] == 0:
                     pk = character.primarykey
@@ -166,11 +170,12 @@ class WidgetSquads(QWidget):
 
             category, okPressed = QInputDialog.getItem(self, "Create", "Choose a category", categories, 0, False)
             if okPressed and category:
+
                 # take the primary key from the chosen awnser and get the character object
                 pk = int(category.split('-', 1)[0])
                 new_squad = Squad.from_database(primarykey=pk, name=name)
-                new_squad.name = name
 
+                # TODO: the below should be done by the backend already by adding a buy_squad method to Squad object and giving the wbid
                 wbidgold = self.mainwindow.wbid.treasury.gold
                 squadprice = new_squad.get_price() * new_squad.get_totalhenchman()
 
