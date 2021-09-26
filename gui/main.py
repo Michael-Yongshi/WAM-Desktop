@@ -11,7 +11,10 @@ from PyQt5.QtWidgets import (
     QInputDialog,
     QMessageBox,
     QMainWindow,
+    QScrollArea,
     QSizePolicy,
+    QVBoxLayout,
+    QWidget,
     )
 
 from PyQt5.QtGui import (
@@ -157,9 +160,27 @@ class WarbandOverview(QMainWindow):
 
         # wrapping heroes, squads and extra details in the bottom horizontal layout
         botbox = QGridLayout()
-        botbox.addWidget(WidgetHeroes(self), 0, 0)
-        botbox.addWidget(WidgetSquads(self), 0, 1)
-        botbox.addWidget(WidgetCurrent(self), 0, 2, 1, 2)
+
+        hero_scroll_widget = WidgetHeroes(self)
+        hero_scroll = QScrollArea(self)
+        hero_scroll.setWidget(hero_scroll_widget)
+        hero_scroll.setWidgetResizable(True)
+        # hero_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        # hero_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+        squad_scroll_widget = WidgetSquads(self)
+        squad_scroll = QScrollArea(self)
+        squad_scroll.setWidget(squad_scroll_widget)
+        squad_scroll.setWidgetResizable(True)
+
+        current_scroll_widget = WidgetCurrent(self)
+        current_scroll = QScrollArea(self)
+        current_scroll.setWidget(current_scroll_widget)
+        current_scroll.setWidgetResizable(True)
+
+        botbox.addWidget(hero_scroll, 0, 0)
+        botbox.addWidget(squad_scroll, 0, 1)
+        botbox.addWidget(current_scroll, 0, 2, 1, 2)
 
         botboxframe = QBorderlessFrame()
         botboxframe.clicked.connect(self.remove_focus)
